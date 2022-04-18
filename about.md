@@ -18,10 +18,10 @@ If you have any challenge that might match my skills and interests, reach out so
 
 You can find and connect with me online on:
 
-* [LinkedIn](https://www.linkedin.com/in/arrishuijgen/)
-* [Twitter](https://twitter.com/bitsadmin/)
 * [GitHub](https://github.com/bitsadmin/)
+* [Twitter](https://twitter.com/bitsadmin/)
+* [LinkedIn](https://www.linkedin.com/in/arrishuijgen/)
 * [BITSADMIN website](https://bitsadmin.com/)
-* [Blog](https://bitsadm.in/)
+* [BITSADMIN blog](https://blog.bitsadmin.com/)
 
 <br />

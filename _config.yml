@@ -1,23 +1,25 @@
 # Site settings
-title: Bitsadmin's blog - Mystery guest in your IT infrastructure
+title: BITSADMIN Blog - Mystery guest in your IT infrastructure
 url: "https://blog.bitsadmin.com"
 baseurl: ""
 description: Blog on security research and red teaming
 
 # Your information
 author: Arris Huijgen
-avatar: "https://cdn.bitsadm.in/bitsadmin.png"
+avatar: "https://static.bitsadmin.com/bitsadmin.png"
 profile: Security Researcher - Red Teamer<br /><span title="Offensive Security Certified Professional">OSCP</span> &bull; <span title="Offensive Security Certified Expert">OSCE</span> &bull; <span title="Offensive Security Exploitation Expert">OSEE</span> 
 profile_links:
+  Website: "https://bitsadmin.com"
   GitHub: "https://github.com/bitsadmin"
   Twitter: "https://twitter.com/bitsadmin"
-  LinkedIn: "https://www.linkedin.com/in/arrishuijgen"
+  #LinkedIn: "https://www.linkedin.com/in/arrishuijgen"
 
 excerpt_separator: <!--more-->
 
 header:
   # Links on the header. Link to in-site page with a slash as prefix
-  links:             
+  links:
+    BITSADMIN website: "https://bitsadmin.com/"
     Categories: /categories/
     About: /about/
 
