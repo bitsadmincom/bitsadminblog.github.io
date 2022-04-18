@@ -1,0 +1,50 @@
+# Site settings
+title: Bitsadmin's blog - Mystery guest in your IT infrastructure
+url: "https://blog.bitsadmin.com"
+baseurl: ""
+description: Blog on security research and red teaming
+
+# Your information
+author: Arris Huijgen
+avatar: "https://cdn.bitsadm.in/bitsadmin.png"
+profile: Security Researcher - Red Teamer<br /><span title="Offensive Security Certified Professional">OSCP</span> &bull; <span title="Offensive Security Certified Expert">OSCE</span> &bull; <span title="Offensive Security Exploitation Expert">OSEE</span> 
+profile_links:
+  GitHub: "https://github.com/bitsadmin"
+  Twitter: "https://twitter.com/bitsadmin"
+  LinkedIn: "https://www.linkedin.com/in/arrishuijgen"
+
+excerpt_separator: <!--more-->
+
+header:
+  # Links on the header. Link to in-site page with a slash as prefix
+  links:             
+    Categories: /categories/
+    About: /about/
+
+permalink: /blog/:title
+
+plugins:
+ - jekyll-paginate
+ - jekyll-gist
+ - jemoji
+
+# Build settings
+paginate: 5
+paginate_path: "page:num"
+
+highlighter: rouge
+markdown: kramdown
+
+# https://jekyllrb.com/docs/configuration/#precedence
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  math_engine: mathjax

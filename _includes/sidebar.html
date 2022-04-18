@@ -1,0 +1,23 @@
+<div class="col-box col-box-author">
+  <img class="avatar" src="{{ site.avatar }}" referrerpolicy="no-referrer-when-downgrade" alt="{{ site.author }}">
+  <div class="col-box-title name">{{ site.author }}</div>
+  <p>{{ site.profile }}</p>
+  <p class="contact">
+    {% for link in site.profile_links %}
+    <a href="{{ link | last }}">{{ link | first }}</a>
+    {% endfor %}
+  </p>
+</div>
+
+<div class="col-box">
+  <div class="col-box-title">Newest Posts</div>
+  <ul class="post-list">
+    {% for post in site.posts limit:5 %}
+      <li><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="col-box post-toc hide">
+  <div class="col-box-title">TOC</div>
+</div>
