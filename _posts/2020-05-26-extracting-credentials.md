@@ -2,6 +2,7 @@
 layout: post
 title:  "Extracting credentials from a remote Windows system - Living off the Land"
 date:   2020-05-26 09:00:00
+excerpt: "How to obtain the credentials from a remote machine or Domain Controller making only use of Windows' built-in functionality? This post will go through the steps of using WMI and SMB in PowerShell from an attacker Windows machine to get hold of the remote files storing the credentials and subsequently extracting them."
 categories: living-off-the-land windows credentials
 permalink: /blog/extracting-credentials-from-remote-windows-system
 ---

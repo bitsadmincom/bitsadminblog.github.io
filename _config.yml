@@ -1,13 +1,14 @@
 # Site settings
-title: BITSADMIN Blog - Mystery guest in your IT infrastructure
+title: "BITSADMIN Blog - Mystery guest in your IT infrastructure"
 url: "https://blog.bitsadmin.com"
 baseurl: ""
-description: Blog on security research and red teaming
+description: "BITSADMIN's blog on security research and red teaming"
 
 # Your information
 author: Arris Huijgen
 avatar: "https://static.bitsadmin.com/bitsadmin.png"
 profile: Security Researcher - Red Teamer<br /><span title="Offensive Security Certified Professional">OSCP</span> &bull; <span title="Offensive Security Certified Expert">OSCE</span> &bull; <span title="Offensive Security Exploitation Expert">OSEE</span> 
+twitter_handle: "bitsadmin"
 profile_links:
   Website: "https://bitsadmin.com"
   GitHub: "https://github.com/bitsadmin"

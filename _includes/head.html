@@ -9,4 +9,24 @@
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
+
+  <!-- Twitter cards -->
+  <meta name="twitter:site"    content="@{{ site.twitter_handle }}">
+  <meta name="twitter:creator" content="@{{ site.twitter_handle }}">
+  <meta name="twitter:title"   content="{{ page.title }}">
+
+  {% if page.excerpt %}
+  <meta name="twitter:description" content="{{ page.excerpt }}">
+  {% else %}
+  <meta name="twitter:description" content="{{ site.description }}">
+  {% endif %}
+
+  {% if page.image %}
+  <meta name="twitter:card"  content="summary_large_image">
+  <meta name="twitter:image" content="{{ site.url }}{{ page.image }}">
+  {% else %}
+  <meta name="twitter:card"  content="summary">
+  <meta name="twitter:image" content="{{ site.avatar }}">
+  {% endif %}
+  <!-- end of Twitter cards -->
 </head>
