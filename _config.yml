@@ -1,4 +1,5 @@
 # Site settings
+site_name: "BITSADMIN Blog"
 title: "BITSADMIN Blog - Mystery guest in your IT infrastructure"
 url: "https://blog.bitsadmin.com"
 baseurl: ""
