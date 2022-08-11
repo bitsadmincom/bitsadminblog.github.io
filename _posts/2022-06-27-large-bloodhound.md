@@ -33,7 +33,7 @@ Besides the SharpHound tool, there are several other options to collect data as 
 
 | Tool | Language | Url | Notes |
 | ---- | -------- | --- | ----- |
-| SharpHound | .NET 4 executable | [https://github.com/BloodHoundAD/SharpHound/](https://github.com/BloodHoundAD/SharpHound/) | Also possible to be executed in-memory using Cobalt Strike, check @william_knows' [blog post](https://williamknowles.io/fetching-sharphound-data-entirely-in-memory-no-dropped-zip-or-json-files-using-bof-net-and-cobalt-strike/) |
+| SharpHound | .NET 4 executable | [https://github.com/BloodHoundAD/SharpHound/](https://github.com/BloodHoundAD/SharpHound/){:target="_blank"} | Also possible to be executed in-memory using Cobalt Strike, check @william_knows' [blog post](https://williamknowles.io/fetching-sharphound-data-entirely-in-memory-no-dropped-zip-or-json-files-using-bof-net-and-cobalt-strike/) |
 | AzureHound | PowerShell | [https://github.com/BloodHoundAD/AzureHound/](https://github.com/BloodHoundAD/AzureHound/) | Specifically for Azure environments, outside of the scope of this article |
 | SharpHound.ps1 | PowerShell | [https://github.com/BloodHoundAD/BloodHound/](https://github.com/BloodHoundAD/BloodHound/) | Available from the `Collectors` folder. Using PowerShell reflectively loads the embedded SharpHound.exe .NET executable. It exposes the `Invoke-BloodHound` function which calls the main function of the SharpHound binary. |
 | SharpHound.py | Python | [https://github.com/fox-it/BloodHound.py/](https://github.com/fox-it/BloodHound.py/) | Python version of SharpHound |
@@ -242,7 +242,7 @@ For that reason it is useful to use multiple databases in Neo4j. This is possibl
 4. Start the neo4j service again using `net start neo4j` (PowerShell: `Start-Service neo4j`). A new `graph.db` folder will automatically be created
 5. Import your data into this clean database. Whenever you want to switch back, follow these steps again renaming the existing `graph.db` folder to for example `graph.db-ProjectY` and renaming the previously renamed folder back to `graph.db`
 
-An alternative way to switch between databases is to uncomment and update the `dbms.active_database=graph.db` line in the `neo4j.conf` file inside Neo4j's `config` directory.
+An alternative way to switch between databases is to uncomment and update the `dbms.active_database=graph.db` line in the `neo4j.conf` file inside Neo4j's `config` directory. A third option is to launch multiple Neo4j instances using Docker as described at the 'Neo4j with Docker' page in Neo4j's developer documentation[^9].
 
 
 # Conclusion
@@ -264,3 +264,4 @@ Thanks for reading and I hope you are able to use some of the tricks in your fut
 [^6]: [Neo4j - The Neo4j Cypher Manual](https://neo4j.com/docs/cypher-manual/)
 [^7]: [GitHub - BloodHound source code - Tabs folder](https://github.com/BloodHoundAD/BloodHound/blob/master/src/components/SearchContainer/Tabs/)
 [^8]: [GitHub - PSNeo4j](https://github.com/RamblingCookieMonster/PSNeo4j)
+[^9]: [Neo4j - Developer - Neo4j with Docker](https://neo4j.com/developer/docker/)
