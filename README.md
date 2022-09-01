@@ -1,7 +1,7 @@
 # Bitsadmin's blog
 _IT security thoughts by Arris Huijgen_
 
-Blog at [bitsadm.in](https://bitsadm.in/).
+Blog at [blog.bitsadmin.com](https://blog.bitsadmin.com/).
 
 Feel free to submit any pull requests in case there are any errors in the articles.
 
