@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Digging for secrets on corporate shares"
-date:   2023-01-23 09:00:00
+date:   2023-04-03 09:00:00
 excerpt: "Sometimes during red team engagements there is no obvious path to escalate and the only way to move forward is to perform an evaluation of the filesystem and network shares. This article discusses how to perform such evaluation efficiently to find the needles in the haystack."
 categories: powershell windows
 permalink: /blog/digging-for-secrets
