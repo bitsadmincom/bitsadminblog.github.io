@@ -173,7 +173,7 @@ cypher-shell -a localhost -u neo4j -p MyPassword --format plain "MATCH (m)-[:Mem
 
 This does the job, however column names always need to explicitly specified to make it readable and further processing of the results is not trivial.
 
-I looked around for alternative ways to perform Cypher queries and encountered the PSNeo4j PowerShell module[^8] by Warren F. ([@psCookieMonster](https://twitter.com/pscookiemonster)) which turned out to suit my needs very well. It seems this module only works well on the Windows PowerShell module (so not on PowerShell Core), which is fine as I am running the Neo4j server directly on my Windows host.
+I looked around for alternative ways to perform Cypher queries and encountered the PSNeo4j PowerShell module[^8] by Warren F. ([@psCookieMonster](https://twitter.com/pscookiemonster)) which turned out to suit my needs very well. It seems this module only works well on the Windows PowerShell module (so not on PowerShell Core), which is fine as I am running the Neo4j server directly on my Windows host. Moreover, PSNeo4j works with Neo4j versions before version 4. This is because it uses Neo4j's REST API which has been removed from version 4[^10].
 
 PSNeo4j can simply be installed using `Install-Module PSNeo4j` after which it can be loaded using `Import-Module PSNeo4j`. After loading the module, the connection to the database can be established using the following lines where the `Get-Neo4jUser` cmdlet validates whether the connection works correctly.
 
@@ -266,3 +266,4 @@ Thanks for reading and I hope you are able to use some of the tricks in your fut
 [^7]: [GitHub - BloodHound source code - Tabs folder](https://github.com/BloodHoundAD/BloodHound/blob/master/src/components/SearchContainer/Tabs/)
 [^8]: [GitHub - PSNeo4j](https://github.com/RamblingCookieMonster/PSNeo4j)
 [^9]: [Neo4j - Developer - Neo4j with Docker](https://neo4j.com/developer/docker/)
+[^10]: [The Neo4j REST API Documentation v3.5](https://neo4j.com/docs/rest-docs/current/)
