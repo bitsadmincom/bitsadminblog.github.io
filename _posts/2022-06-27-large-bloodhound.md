@@ -4,7 +4,7 @@ title:  "Dealing with large BloodHound datasets"
 date:   2022-06-27 09:00:00
 excerpt: "Article discussing some of the challenges I faced importing large datasets into BloodHound including some scripts to overcome these challenges. Additionally some tricks are discussed on how to use Neo4j's Cypher language from PowerShell to get the right results quickly."
 categories: active-directory bloodhound
-permalink: /blog/dealing-with-large-bloodhound-datasets
+permalink: /dealing-with-large-bloodhound-datasets
 ---
 
 *[LDAP]: Leightweight Director Access Protocol (389/TCP)

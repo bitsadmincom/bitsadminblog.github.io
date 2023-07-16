@@ -4,7 +4,7 @@ title:  "Spying on users using Remote Desktop Shadowing - Living off the Land"
 date:   2021-03-26 09:00:00
 excerpt: "How to spy on users on remote computers making only use of Windows' built-in functionality? This post will explain the steps to (ab)use Windows' Remote Desktop feature to view a remote user's desktop using native Windows functionality without them noticing it."
 categories: living-off-the-land windows remote-desktop
-permalink: /blog/spying-on-users-using-rdp-shadowing
+permalink: /spying-on-users-using-rdp-shadowing
 ---
 *[RDP]: Remote Desktop Protocol
 *[WMI]: Windows Management Instrumentation

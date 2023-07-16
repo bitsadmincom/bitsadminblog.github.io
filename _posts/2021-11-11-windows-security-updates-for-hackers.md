@@ -4,8 +4,9 @@ title:  "Windows Security Updates for Hackers"
 date:   2021-11-11 09:00:00
 excerpt: "Windows versions, releases and patch levels are a rather complex matter. This post brings structure in how Windows versioning and patching works and how to identify which vulnerabilities a Windows installation is vulnerable to."
 categories: windows kbs patches wesng
-permalink: /blog/windows-security-updates-for-hackers
+permalink: /windows-security-updates-for-hackers
 ---
+
 *[WES-NG]: Windows Exploit Suggester - Next Generation
 *[OS]: Operating System
 *[OSs]: Operating Systems

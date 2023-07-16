@@ -25,7 +25,7 @@ header:
     Categories: /categories/
     About: /about/
 
-permalink: /blog/:title
+permalink: /:title
 
 plugins:
  - jekyll-paginate

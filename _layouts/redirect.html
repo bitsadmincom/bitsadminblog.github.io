@@ -1,0 +1,17 @@
+<html>
+{% assign newlink = page.permalink | replace: '/blog', '' %}
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="1;url=https://blog.bitsadmin.com{{ newlink }}" />
+    <link rel="canonical" href="https://blog.bitsadmin.com{{ newlink }}" />
+    <script type="text/javascript">
+        window.location.href = "https://blog.bitsadmin.com{{ newlink }}"
+    </script>
+    <title>Page Redirection</title>
+</head>
+
+<body>
+    If you are not redirected automatically, follow <a href='https://blog.bitsadmin.com{{ newlink }}'>this link</a>.
+</body>
+
+</html>
