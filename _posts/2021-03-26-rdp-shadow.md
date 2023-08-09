@@ -110,7 +110,7 @@ $s = New-CimSession -ComputerName MYSERVER -SessionOption $so
 
 The `$s` variable contains the session and will be used in all subsequent sections. Alternatively WinRM can be used by removing the `-SessionOption` parameter.
 
-For more information about WMI, check my previous article on Extracting credentials from a remote Windows system - Living off the Land [here](/blog/extracting-credentials-from-remote-windows-system).
+For more information about WMI, check my previous article on Extracting credentials from a remote Windows system - Living off the Land [here](/extracting-credentials-from-remote-windows-system).
 
 # Enabling RDP Shadowing
 Before the RDP shadowing feature can be used from a remote host, the **Remote Desktop Services** (`TermService`) service needs to be running and the **Remote Desktop - Shadow (TCP-In)** rule needs to be enabled in the firewall. If the target machine is already used via Remote Desktop (`quser.exe` output shows **RDP-Tcp** session names), this step can be skipped. In case users access the machine only physically (so not using Remote Desktop), this step might be required.

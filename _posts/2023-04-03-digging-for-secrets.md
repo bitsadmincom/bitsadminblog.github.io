@@ -303,7 +303,7 @@ Analysis of the resulting csv containing the directory structure can be performe
 
 # References
 [^1]: [BITSADMIN GitHub: Miscellaneous](https://github.com/bitsadmin/miscellaneous)
-[^2]: [BITSADMIN Blog: Extracting credentials from a remote Windows system](https://blog.bitsadmin.com/blog/extracting-credentials-from-remote-windows-system)
+[^2]: [BITSADMIN Blog: Extracting credentials from a remote Windows system](https://blog.bitsadmin.com/extracting-credentials-from-remote-windows-system)
 [^3]: [CCob GitHub: BOF.NET](https://github.com/CCob/BOF.NET)
-[^4]: [BITSADMIN Blog: Dealing with large BloodHound datasets](https://blog.bitsadmin.com/blog/dealing-with-large-bloodhound-datasets#cypher-query-tools)
+[^4]: [BITSADMIN Blog: Dealing with large BloodHound datasets](https://blog.bitsadmin.com/dealing-with-large-bloodhound-datasets#cypher-query-tools)
 [^5]: [Microsoft Learn: PowerShell Providers](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_providers)
