@@ -251,6 +251,7 @@ Whenever a service running on a TLS port in the domain is using properly signed 
 When a webserver running on a TLS port has been identified, it is also easy to simply visit the webpage in a browser, view the certificate details and use the browser's functionality to store the certificates on disk. A final option is to connect to a TLS port with whatever tool works (e.g. the openssl client) while Wireshark is listening on the network interface, and then extracting the certificate(s) from the Server Hello message.
 
 **Option \#4: Certificate Enrollment**
+
 On the domain controllers `\\ad.bitsadmin.com\CertEnroll` or otherwise the certificate authority servers exists a share called `CertEnroll`. Among other files, this share hosts a certificate (`.crt`) with the certificate chain.
 
 **Importing**

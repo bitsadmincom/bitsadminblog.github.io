@@ -98,7 +98,7 @@ Other snap-ins that provide information about the domain are Active Directory Do
 ### Sysinternals ADExplorer
 An alternative way to interact with Active Directory is through Sysinternals' ADExplorer tool. This tool can be launched from the PowerShell session prepared in the previous section. Once launched, in the connect screen all fields can be left empty and the OK button can be clicked where ADExplorer connects to the target domain. Optionally at the connect screen in the Connect field the FQDN of the domain controller followed by `:636` to force ADExplorer to connect over LDAPS, e.g., `DC1.ad.bitsadmin.com:636`. Next, any LDAP queries can be performed and, if the user has sufficient authorizations, modifications can be made.
 
-Another feature of Sysinternals ADExplorer is to make a snapshot of all data in the domain, storing it in a binary (`.dat`) file. This file can subsequentially be either used to perform queries offline, or be converted to BloodHound (`.json`) format and imported in BloodHound to identify escalation paths. Refer to the "Dealing with large Bloodhound datasets" article[^2] on this blog for more information.
+Another feature of Sysinternals ADExplorer is to make a snapshot of all data in the domain, storing it in a binary (`.dat`) file. This file can subsequentially be either used to perform queries offline, or be converted to BloodHound (`.json`) format and imported in BloodHound to identify escalation paths. Refer to the [Dealing with large Bloodhound datasets](/spying-on-users-using-rdp-shadowing) article[^2] on this blog for more information.
 
 ## Data
 The next category of attacks is in the data domain, with the objective of identifying information to get a better understanding of the IT infrastructure, or maybe even credentials or tokens which can be used for escalation. Because browsing through shares is relatively slow over SOCKS, a good hybrid approach is to use the Dir2json tool introduced in the previous blog ([Digging for secrets on corporate shares](/digging-for-secrets)[^3]) from the software implant to create a directory listing, and then download the files or complete folder structures from the Offensive Windows VM.
@@ -274,7 +274,7 @@ Besides the command-line, it is also possible to manage Task Scheduler through t
 ![Task Scheduler MMC snap-in](/assets/img/20230815_living-off-the-foreign-land/taskschd.png "Task Scheduler MMC snap-in")
 
 ### Windows Firewall
-The Windows firewall can be queried or manipulated through the command-line using netsh.exe or the cmdlets in the NetSecurity module. For example a firewall rule can be enabled (allowing a certain connection) as used in the [Spying on users using RDP shadowing article](/spying-on-users-using-rdp-shadowing) on this blog[^6].
+The Windows firewall can be queried or manipulated through the command-line using netsh.exe or the cmdlets in the NetSecurity module. For example a firewall rule can be enabled (allowing a certain connection) as used in the [Spying on users using RDP shadowing article](/spying-on-users-using-rdp-shadowing) article on this blog[^6].
 
 ```powershell
 PS C:\> netsh.exe -r W10.ad.bitsadmin.com advfirewall firewall set rule name="Remote Desktop - Shadow (TCP-In)" new enable=yes
