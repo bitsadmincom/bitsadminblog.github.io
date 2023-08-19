@@ -297,24 +297,24 @@ In the offensive setup, a split DNS setup is used. Moreover, optionally a DHCP s
 ```ini
 # Port
 port=5353
- 
+
 # DHCP server
 dhcp-range=10.120.0.100,10.120.0.200,12h
 dhcp-option=option:dns-server,10.120.0.1
 dhcp-authoritative
- 
+
 # Target network DNS server(s)
 server=/ad.bitsadmin.com/10.0.10.10
 server=/ad.bitsadmin.com/10.0.10.11
 server=/10.0.10.in-addr.arpa/10.0.10.10
 server=/10.0.10.in-addr.arpa/10.0.10.11
- 
+
 server=/corp.int/10.0.20.10
 server=/20.0.10.in-addr.arpa/10.0.20.10
- 
+
 server=/research.dev/10.0.30.10
 server=/30.0.10.in-addr.arpa/10.0.30.10
- 
+
 # Default DNS server
 server=1.0.0.1
 ```
@@ -366,20 +366,20 @@ Using these commands, a new tunnel interface called `tun1` is created. Next, an 
 Create Tunnel Interface v1.0
 @bitsadmin - https://github.com/bitsadmin/lofl
 Usage: create_tun.sh [-d] INTERFACE [IPSUBNET]
- 
+
 Parameters:
   -d:        Delete the interface
   INTERFACE: Name of the interface to be created, for example tun1
   IPSUBNET:  IP address and subnet mask that will be assigned to the new interface.
              Noted down in CIDR notation, for example: 198.18.0.1/15
- 
+
 Examples:
   Create new tunnel interface tun1
   create_tun.sh tun1
- 
+
   Create new tunnel interface tun1 with specific IP/subnet
   create_tun.sh tun1 198.18.0.1/15
- 
+
   Delete tunnel interface tun1
   create_tun.sh -d tun1
 ```
@@ -402,10 +402,10 @@ Based on the IP configuration of the victim system which is used for the SOCKS p
 ```bash
 # IP range of ad.bitsadmin.com
 ip route add 10.0.10.0/24 via 198.18.0.1 dev tun1
- 
+
 # IP range of corp.int
 ip route add 10.0.20.0/24 via 198.18.0.1 dev tun1
- 
+
 # IP range of research.dev
 ip route add 10.0.30.0/24 via 198.18.0.1 dev tun1
 ```
@@ -425,7 +425,7 @@ Because the Offensive Windows VM is in a different network segment, a network ad
 iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
 iptables -A FORWARD -i ens33 -o en37 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i en37 -o ens33 -j ACCEPT
- 
+
 # Target network
 iptables -t nat -A POSTROUTING -o tun1 -j MASQUERADE
 iptables -A FORWARD -i tun1 -o en37 -m state --state RELATED,ESTABLISHED -j ACCEPT

