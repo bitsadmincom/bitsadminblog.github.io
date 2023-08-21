@@ -474,7 +474,7 @@ After all steps have been performed, on the Linux host it is now possible to int
 host -t A ad.bitsadmin.com
 ```
 
-This concludes the setup of the Linux routing VM to facilitate for the living off the foreign land activities performed from the Offensive Windows VM. In [part 2](/living-off-the-foreign-land-windows-as-offensive-platform-part-2) of this article, the configuration of the Offensive Windows VM will be discussed. Moreover, this second part will detail the various ways of collecting different types of credentials from the victim system and how to use them from the Offensive Windows VM.
+This concludes the setup of the Linux routing VM to facilitate for the living off the foreign land activities performed from the Offensive Windows VM. In **[part 2 of this article](/living-off-the-foreign-land-windows-as-offensive-platform-part-2)**, the configuration of the Offensive Windows VM will be discussed. Moreover, this second part will detail the various ways of collecting different types of credentials from the victim system and how to use them from the Offensive Windows VM.
 
 [^20]: <https://dnsmasq.org/>
 [^21]: <https://github.com/xjasonlyu/tun2socks/wiki/Proxy-Models>

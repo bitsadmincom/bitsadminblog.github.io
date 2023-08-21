@@ -561,7 +561,7 @@ taskkill.exe /F /IM explorer.exe & Rubeus.exe asktgt /domain:ad.bitsadmin.com /u
 
 
 # Conclusion
-This concludes the part two in which both the Offensive Windows VM has been configured as well as credential material has been obtained and prepared. [Part 3](/living-off-the-foreign-land-windows-as-offensive-platform-part-3) which is the final part will discuss how to now use this setup to perform reconnaissance and offensive activities on the target network.
+This concludes the part two in which both the Offensive Windows VM has been configured as well as credential material has been obtained and prepared. **[Part 3 of this article](/living-off-the-foreign-land-windows-as-offensive-platform-part-3)**, which is the final part, will discuss how to now use this setup to perform reconnaissance and offensive activities on the target network.
 
 
 # Appendix B: Credential types and tools
