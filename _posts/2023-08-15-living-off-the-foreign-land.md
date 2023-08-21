@@ -56,8 +56,10 @@ Because so far I have been the only contributor and there are many LOFLCABs, the
 
 Because of its length, this article is split into three parts:
 1. Setup of Linux VM for SOCKS routing (this article)
-2. Configure Windows VM for Kerberos and obtaining/using credentials ([part 2](/living-off-the-foreign-land-windows-as-offensive-platform-part-2))
-3. Living Off the Foreign Land ([part 3](/living-off-the-foreign-land-windows-as-offensive-platform-part-3))
+2. Configure Windows VM for Kerberos and obtaining/using credentials: [Part 2](/living-off-the-foreign-land-windows-as-offensive-platform-part-2)
+3. Living Off the Foreign Land: [Part 3](/living-off-the-foreign-land-windows-as-offensive-platform-part-3)
+
+**Before diving into the setup, it is problaby relevant to read up on the attacks that are possible from the attacker's Offensive Windows VM using Kerberos in [Part 3 of the article](/living-off-the-foreign-land-windows-as-offensive-platform-part-3).**
 
 Now, let's dive into the first part, setting up a Linux VM for SOCKs routing!
 
