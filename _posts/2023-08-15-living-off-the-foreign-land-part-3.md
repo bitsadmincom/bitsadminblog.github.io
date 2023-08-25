@@ -208,7 +208,7 @@ ProcessId ReturnValue PSComputerName
 PS C:\>
 ```
 
-Besides execution through the commonly known `Win32_Process` class, there are also alternatives like WMI's `Win32_Product` class which allows to install a `.msi` installer package from a URL. See below a video clip where in a benign `.msi` is downloaded and installed. This could however also have been a malicious installer package which launches a C2 software implant.
+Besides execution through the commonly known `Win32_Process` class, there are also alternatives like WMI's `Win32_Product` class which allows to install a `.msi` installer package from a URL. See below an example in which a benign `.msi` is downloaded and installed. This could however also have been a malicious installer package which launches a C2 software implant.
 
 <video width="740" height="430" controls>
   <source src="/assets/img/20230815_living-off-the-foreign-land/WMI_Win32_Product.mp4" type="video/mp4">
