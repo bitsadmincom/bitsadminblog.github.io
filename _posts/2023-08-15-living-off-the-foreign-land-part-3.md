@@ -208,6 +208,13 @@ ProcessId ReturnValue PSComputerName
 PS C:\>
 ```
 
+Besides execution through the commonly known `Win32_Process` class, there are also alternatives like WMI's `Win32_Product` class which allows to install a `.msi` installer package from a URL. See below a video clip where in a benign `.msi` is downloaded and installed. This could however also have been a malicious installer package which launches a C2 software implant.
+
+<video width="740" height="430" controls>
+  <source src="/assets/img/20230815_living-off-the-foreign-land/WMI_Win32_Product.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 A final example on direct execution of command-lines is execution via DCOM. There are various COM objects which are possible to initiate remotely and are able to execute command-lines. In this example the `IShellWindows` interface which exposes a `ShellExecute` function. The process executed through this interface is launched under the `explorer.exe` process. More examples of such COM interfaces can be found in the "Abusing COM & DCOM objects" article[^5].
 
 ```powershell
