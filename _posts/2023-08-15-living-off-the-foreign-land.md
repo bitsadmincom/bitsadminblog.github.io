@@ -48,11 +48,11 @@ LOFLCABs are categorized as follows:
 
 Besides this project being used by attackers to use LOFLCABs to perform their activities and defenders to create alerting rules for IOCs, Windows system administrators can also greatly benefit from this project. This project can aid in efficiently managing the network, using one-liners to directly use MMC snap-ins against a remote host or using cmdlets and WMI classes in scripts to quickly collect information on a large scale or perform actions on multiple systems at once.
 
-Finally, this article and associated LOFL project can also be relevant for security incident responders to safely collect information and perform activities against a compromised domain with infected servers and workstations.
+Finally, this article and associated LOFL-Project website can also be relevant for security incident responders to safely collect information and perform activities against a compromised domain with infected servers and workstations.
 
-The LOFL website[^1], inspired by the great LOLBAS[^2] and GTFOBins[^3] websites, can be found at <https://lofl-project.github.io/>. Besides the web interface, APIs are available to programmatically access the LOFLCABs for any automated processing. Moreover, scripts used for the setup are available in the LOFL GitHub repository[^4] at <https://github.com/bitsadmin/lofl>.
+The LOFL-Project website[^1], inspired by the great LOLBAS[^2] and GTFOBins[^3] websites, can be found at <https://lofl-project.github.io/>. Besides the web interface, APIs are available to programmatically access the LOFLCABs for any automated processing. Moreover, scripts used for the setup are available in the LOFL GitHub repository[^4] at <https://github.com/bitsadmin/lofl>.
 
-Because so far I have been the only contributor and there are many LOFLCABs, the web interface also provides a checkbox which displays the entries of which I expect they can be used as LOFLCABs, however are not yet fully documented. Any pull requests for complementing these is very much welcome at the LOFL project GitHub repository at <https://github.com/LOFL-Project/LOFLCAB>.
+Because so far I have been the only contributor and there are many LOFLCABs, the web interface also provides a checkbox which displays the entries of which I expect they can be used as LOFLCABs, however are not yet fully documented. Any pull requests for complementing these is very much welcome at the LOFL-Project GitHub repository at <https://github.com/LOFL-Project/LOFLCAB>.
 
 Because of its length, this article is split into three parts:
 1. Setup of Linux VM for SOCKS routing (this article)
@@ -70,7 +70,7 @@ Now, let's dive into the first part, setting up a Linux VM for SOCKs routing!
 
 
 # SOCKS
-As Living off the Foreign Land heavily depends on SOCKS, this article will start with an explanation on what SOCKS is and what the difference is between its various versions.
+As Living Off the Foreign Land heavily depends on SOCKS, this article will start with an explanation on what SOCKS is and what the difference is between its various versions.
 
 ## SOCKS
 SOCKS stands for Socket Secure and is a protocol used for OSI model layer 4 (TCP/UDP) network communication between a client and a server through an intermediary proxy server. SOCKS is used for purposes like hiding your actual IP for privacy reasons and for reaching hosts that are not reachable directly. This looks as follows.
@@ -101,7 +101,7 @@ As a summary, the following table lists the different SOCKS versions, its RFC st
 | SOCKS5       | <https://www.rfc-editor.org/rfc/rfc1928.txt>    | Compared to SOCKS4A, SOCKS5 adds support for authentication to the SOCKS server, IPv6 and UDP support. Only a few implementations support for SOCKS5's UDP ASSOCIATE feature for dynamically connecting to UDP ports. |
 
 ## Non-SOCKS aware software
-Besides making use of an application which has support for SOCKS built-in, it is also possible to use software like proxychains-ng[^5] to force software in which no SOCKS can be configured to go over the SOCKS tunnel. This is accomplished by proxychains-ng by launching the software which hooks any functions related to network connectivity and at the moment the software attempts to interact with the network, it will make sure in the background the SOCKS tunnel is used. An example of using proxychains-ng for the netcat network utility looks as follows: `proxychains ncat -v target.com 80`. Proxychains will load the `ncat` binary hooking the network connectivity functions and forcing those over the proxy that is configured in proxychain-ng's `/etc/proxychains.conf` configuration file, e.g., `socks4 2.2.2.2 1080`.
+Besides making use of an application which has support for SOCKS built-in, it is also possible to use software like proxychains-ng[^5] to force software in which no SOCKS can be configured to go over the SOCKS server. This is accomplished by proxychains-ng by launching the software which hooks any functions related to network connectivity and at the moment the software attempts to interact with the network, it will make sure in the background the SOCKS tunnel is used. An example of using proxychains-ng for the netcat network utility looks as follows: `proxychains ncat -v target.com 80`. Proxychains will load the `ncat` binary hooking the network connectivity functions and forcing those over the proxy that is configured in proxychain-ng's `/etc/proxychains.conf` configuration file, e.g., `socks4 2.2.2.2 1080`.
 
 Now it is clear what SOCKS is and how it can be used, the next session discusses why SOCKS is so relevant for red teaming.
 
@@ -166,7 +166,7 @@ Something to be aware of is that there are two different versions of gost: v2 wh
 | **GitHub**        | <https://github.com/ginuerzh/gost>          | <https://github.com/go-gost/gost>          |
 | **Download**      | <https://github.com/ginuerzh/gost/releases> | <https://github.com/go-gost/gost/releases> |
 | **Documentation** | <https://v2.gost.run/en/>                   | <https://latest.gost.run/en/>              |
-| **Notes**         | Legacy                                      |                                            |
+| **Notes**         | Legacy version of Gost                      |                                            |
 
 ## Other options
 Besides reverse SOCKS servers there are also other situations in which socks can be used.
@@ -175,10 +175,10 @@ Consider for example the SocksOverRDP[^10] tool written by Balazs Bucsay (@xorei
 
 Another example is a tool called pivotnacci[^11] written by Eloy Pérez (@Zer1t0) which can be used to pivot over a compromised webserver into the network in which the webserver is located. The tools consist of a script (`.aspx`, `.jsp` or `.php`) which is placed on the webserver and a Python script which is executed on the attacker side, connects to the webserver. Once connected to the webserver, the Python script locally opens up a SOCKS port which can be used to pivot into the network in which the webserver resides.
 
-Many more tools are available which are available which offer some kind of SOCKS support. Things to consider when looking for tools is:
+Many more tools are available which are available which offer some kind of SOCKS support. Aspects to consider when looking for tools are:
 1. Support for reverse a reverse SOCKS connection: When launched on the victim system, it connects back to the attacker, and then opens a SOCKS listener on the attacker system providing access to the network the victim system is connected to;
 2. Support for outgoing proxy: Regularly corporate environments restrict the ports. This usually means systems are able to connect to just the web ports (`80`, `443`) and in addition require clients to go over an outgoing proxy server to access the Internet;
-3. Support for proxy authentication: In case a proxy is required to access the Internet, some might also require some type of authentication like basic, NTLM or Kerberos. In case the SOCKS software uses the winhttp.dll library, going over the proxy and if needed authenticating to it is handled transparently. If that library is not used, the proxy server address and credentials might have to be specified explicitly. Generally, C2 software under the hood takes care of any corporate proxy that might be in place, which is then also used transparently when the SOCKS functionality of the software implant is activated.
+3. Support for proxy authentication: In case a proxy is required to access the Internet, some might also require some type of authentication like basic, NTLM or Kerberos. In case the SOCKS software uses the winhttp.dll library, going over the proxy and if needed authenticating to it is handled transparently. If that library is not used, the proxy server address and credentials might have to be specified explicitly. Generally, C2 software under the hood takes care of any corporate proxy that might be in place, which is then also used transparently when the SOCKS functionality of the software implant is activated;
 4. Optionally: Type of SOCKS that is supported and which features of the protocol are implemented: Most tools support SOCKS4A, various tools also SOCKS5, but only a few of the tools supporting SOCKS5 also implement the UDP ASSOCIATE feature.
 
 The list of tools that I have taken a look at can be found in [Appendix A: Comparison of SOCKS tools](#appendix-a-comparison-of-socks-tools).
@@ -188,7 +188,7 @@ The table below shows the summary of the SOCKS setups that have been discussed i
 
 | **Title**    | **Description**                                                                                                                                                                                                                                                          | **Link**                                      |
 |--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
-| C2           | C2 software implants often have SOCKS functionality built in                                                                                                                                                                                                             | n/a                                           |
+| C2           | C2 software implants often have SOCKS functionality built in.                                                                                                                                                                                                            | <https://www.thec2matrix.com/>                |
 | Linux        | SOCKS tunnel by either directly connecting to a Linux server using the SSH client using the `-D` parameter, or alternatively by placing a hardware implant in the target network which dials back to a middle server and then provides SSH access to the hardware implant. | n/a                                           |
 | Chisel       | Tunneling tool which natively supports reverse SOCKS and provides binaries for many platforms and architectures. Meteorite's fork provides support for the SOCKS5 UDP ASSOCIATE feature.                                                                                 | <https://github.com/jpillora/chisel>          |
 | gost         | Advanced tunneling tool which allows to tunnel over a myriad of protocols, supporting SOCKS and (via rtcp) reverse SOCKS. Provides binaries for various platforms and architectures.                                                                                     | <https://github.com/go-gost/gost>             |
@@ -207,7 +207,7 @@ The table below shows the summary of the SOCKS setups that have been discussed i
 Thinking of an attacker machine, people usually immediately think of a Linux system with a distribution like Kali or BlackArch with a large number of hacking tools and scripts[^12]<sup>,</sup>[^13]. What many do not realize however is that for attacking Windows-based environments, Windows through its various PowerShell modules and binaries is a great offensive operating system which is very capable of performing a whole range of offensive actions against remote Windows systems and services.
 
 ## Advantages of using Windows
-While performing a red team, the operator effectively is a system administrator who is managing someone else's environment. Having all Windows' management tooling at your disposal together with some kind of credential material which authorizes you to interact with the environment is all that is needed to perform the job.
+While performing a red team, the operator effectively is a system administrator who is managing someone else's environment. Having all Windows' management tooling at your disposal together with some kind of credential material which authorizes you to interact with the environment is generally all that is needed to perform the job.
 
 Activities that can be performed from Windows are plentiful, a number of examples:
 - Enumerating and modifying Active Directory;
@@ -217,7 +217,7 @@ Activities that can be performed from Windows are plentiful, a number of example
 
 Having the capability to perform such activities from an Offensive Windows machine over SOCKS has various advantages.
 - No execution takes place on the victim system in the target network, where activities could be picked up by the security software;
-- Instead of just shooting with offensive tools at an environment, you are learning the sysadmin (engineering) side of the story; literally using the tools the administrators to manage the remote network;
+- Instead of just shooting with offensive tools at an environment, you are learning the sysadmin (engineering) side of the story; literally using the tools the administrators use to manage the remote network;
 - Windows regularly makes use of undocumented protocols for which no open source (Linux-based) tooling/scripts might have been written yet while Windows natively speaks with other Windows systems. This means that Windows functionalities can directly be used from an attacker Windows.
 - Kerberos is natively used whenever an authentication is requested by a remote system - more on this in the upcoming sections;
 - It is possible to install any Windows-based 3<sup>rd</sup> party software that is used in the target network on the Offensive Windows machine and use it over the network. Moreover, it is possible to copy Windows-based software that has been in-house developed by the target organization to the Offensive Windows machine and use it from there as well;
@@ -263,7 +263,7 @@ Combining tun2socks with the power of Linux' iptables, routes and DNS server, it
 
 On a high level, this setup on the Linux routing VM is as follows:
 - The Offensive Windows VM is placed behind the Linux routing VM, so Linux is able to control all of the traffic coming from the Offensive Windows VM;
-- The tun2socks network interface is created and configured to reach the target network;
+- The tun2socks network interface is created and configured to reach the target network over SOCKS;
 - Using iptables rules split tunneling is configured where by default all traffic is routed to the Internet while routes for specific subnets are configured to go over the tun2socks interface;
 - A DNS server (dnsmasq) is installed and configured on Linux and the Offensive Windows VM is configured to use this DNS server. This makes sure DNS requests destined for the client network are sent there while everything else is sent to the default Internet DNS server;
 - Some fix-ups are put in place to make sure everything works smoothly.
@@ -508,7 +508,7 @@ dig @10.0.0.10 -p 53 ad.bitadmin.com +retry=0 +tcp
 ```
 
 ## Port does not respond
-Be aware that the tun2socks software is a bit deceptive. For performance reasons when a TCP SYN packet is sent to the tun2socks interface (`tun1`), the interface immediately responds with a SYN/ACK response without checking whether the port on the target is actually open. For that reason make sure to check the output of tun2socks to see whether a warning is displayed for the host:port combination the connection is attempted to. Alternatively using proxychains (make sure the correct SOCKS server/version is set in `/etc/proxychains.conf`) it is possible to validate using for example `ncat` or `nmap -sT` whether a port is open. See also the [Future work](/living-off-the-foreign-land-windows-as-offensive-platform-part-3#future-work) section in part 3 on a possible fix for this.
+Be aware that the tun2socks software is a bit deceptive. For performance reasons when a TCP SYN packet is sent to the tun2socks interface (`tun1`), the interface immediately responds with a SYN/ACK response without checking whether the port on the target is actually open. For that reason make sure to check the output of tun2socks to see whether a warning is displayed for the host:port combination the connection is attempted to. Alternatively using proxychains (make sure the correct SOCKS server/version is set in `/etc/proxychains.conf`) it is possible to validate using for example `ncat` or `nmap -sT` whether a port is open. See also the [Future work](/living-off-the-foreign-land-windows-as-offensive-platform-part-3#future-work section in part 3) on a possible fix for this.
 
 ## CLDAP queries are not properly forwarded
 It is a known issue that for some reason the `cldaproxy.sh` script is not always working properly. In case a LOLFCAB hangs and and by looking at the network traffic between the Offensive Windows VM and the Linux routing VM it shows that CLDAP (389/UDP) is used, restarting the `cldaproxy.sh` script might resolve the issue.

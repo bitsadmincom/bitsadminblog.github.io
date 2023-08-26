@@ -22,7 +22,7 @@ permalink: /living-off-the-foreign-land-windows-as-offensive-platform-part-2
 
 
 # Introduction
-In [part 1](/living-off-the-foreign-land-windows-as-offensive-platform) of this article, the Linux VM has been configured for SOCKS routing. In this part the configuration of the Offensive Windows VM will be discussed. Moreover, after configuring the Offensive Windows VM, the various ways of collecting different types of credentials from the victim system and using them from the Offensive Windows VM will be discussed.
+In [part 1 of this article](/living-off-the-foreign-land-windows-as-offensive-platform), the Linux VM has been configured for SOCKS routing. In this part the configuration of the Offensive Windows VM will be discussed. Moreover, after configuring the Offensive Windows VM, the various ways of collecting different types of credentials from the victim system and using them from the Offensive Windows VM will be discussed.
 
 
 # Offensive setup: Offensive Windows VM
@@ -361,7 +361,7 @@ In case ADCS has been configured in the domain and the user has sufficient right
 
 One example use case where Active Directory uses certificates is when Windows Hello for Business is used for an endpoint. Enabling this feature transparently generates a certificate pair and stores its public key in the user object in Active Directory. As an attacker is also possible to generate a key pair and add the public key to the account. In the offensive security world this is commonly referred to as a shadow credential.
 
-An example of a tool which is able to add shadow credentials to an account is [Whisker](https://github.com/eladshamir/Whisker)[^14] where the command-line is `Whisker add /target:TargetUser`. Be aware though that generally a low-privileged user might not have sufficient authorizations to write a public key to the msDS-KeyCredentialLink attribute of its user object in Active Directory. In case the preconditions are right, an alternative might be to coerce a service on the victim system through a reverse port forward to authenticate to the attacker, and then relay the authentication to add a shadow credential to the computer account in Active Directory. This has a high likelihood of succeeding because the computer account *is* generally able to add a shadow credential to itself. It however goes beyond the scope of this article to describe this attack in detail.
+An example of a tool which is able to add shadow credentials to an account is [Whisker](https://github.com/eladshamir/Whisker)[^14] where the command-line is `Whisker add /target:TargetUser`. Be aware though that generally a low-privileged user might not have sufficient authorizations to write a public key to the `msDS-KeyCredentialLink` attribute of its user object in Active Directory. In case the preconditions are right, an alternative might be to coerce a service on the victim system through a reverse port forward to authenticate to the attacker, and then relay the authentication to add a shadow credential to the computer account in Active Directory. This has a high likelihood of succeeding because the computer account *is* generally able to add a shadow credential to itself. It however goes beyond the scope of this article to describe this attack in detail.
 
 **Shadow credentials \#2**
 
@@ -405,11 +405,11 @@ The various logon sessions that are active on a system can be displayed using Sy
 ## Loading credential material
 For the different types of credentials different methods are used to place those into memory. Whereas Windows provides a built-in command-line tool to authenticate using plaintext credentials to remote systems, other credentials like certificates, TGTs and hashes require the Rubeus and Mimikatz tooling.
 
-To get started, it is recommended to start with an elevated `cmd.exe` prompt. Moreover, to differentiate console windows spawned with certain credentials, in my experience it is best to always tag the "base" cmd.exe window by using a different color, for example a bright blue background with white text: `color 1f`. Whenever it is needed, from that window all other processes running with different credentials can be killed, and with that all logon sessions with alternative credential material can be cleaned up.
+To get started, it is recommended to start with an elevated `cmd.exe` command prompt. Moreover, to differentiate console windows spawned with certain credentials, in my experience it is best to always tag the "base" `cmd.exe` window by using a different color, for example a bright blue background with white text: `color 1f`. Whenever it is needed, from that window all other processes running with different credentials can be killed, and with that all logon sessions with alternative credential material can be cleaned up.
 
 ![Different logon sessions](/assets/img/20230815_living-off-the-foreign-land/LogonSessions.png "Different logon sessions")
 
-Something to be aware of in Windows is that processes running in high-integrity (run as Administrator) have a different logon session compared to processes running in medium-integrity. For LOFL, it is recommended to launch a high-integrity cmd.exe command prompt. This command prompt, as opposed to a medium-integrity command prompt is recommended because some LOFLCABs require a high-privileged local context to execute, which is perfectly possible because it is the attacker’s Offensive Windows VM on which the processes are executed.
+Something to be aware of in Windows is that processes running in high-integrity (run as Administrator) have a different logon session compared to processes running in medium-integrity. For LOFL, it is recommended to launch a high-integrity `cmd.exe` command prompt. This command prompt, as opposed to a medium-integrity command prompt is recommended because some LOFLCABs require a high-privileged local context to execute, which is perfectly possible because it is the attacker’s Offensive Windows VM on which the processes are executed.
 
 For all types of credentials, it is of key importance that for any type of interaction the Fully Qualified Domain Name (FQDN) is used (e.g., `ad.bitsadmin.com`) as opposed to just the legacy domain name (e.g., `AD`), also known as NetBIOS domain name or Single Label Domain (SLD). The FQDN is required for DNS where the DNS server configured on the Linux router VM is able to direct the DNS requests to the appropriate hosts. Also, Kerberos in the Offensive Windows VM requires the FQDN to be used so it can resolve the relevant DNS records and perform its request to the Kerberos port (88/TCP) of the Domain Controller (DC) hosting the Key Distribution Center (KDC).
 
@@ -471,7 +471,7 @@ taskkill.exe /F /IM explorer.exe & runas.exe /netonly /user:ad.bitsadmin.com\Use
 ## TGT
 When using a ticket granting ticket (TGT), Rubeus needs to be used. Rubeus provides the option to create a netonly process using a TGT stored in a `.kirbi` file or provided as a base64 string on the command-line. Because the Negotiate authentication package is used, the authentication might still fall back on NTLM authentication. However, because only a TGT is provided, there is no such credential material available.
 
-It *is* possible to execute Rubeus with the `/ticket` parameter for authentication, omitting the `/domain`, `/username` and `/password` parameters, however in that case Rubeus will generate a random domain, username and password itself and provide those to the authentication package. This is however bad for OPSEC reasons as the username will be visible in the logs of the target domain. For that reason, it is recommended to specify the correct domain and the /username parameter with the user of the TGT. Finally, any password can be used as there is probably no legitimate password available. As discussed in the Offensive setup: Offensive Windows VM section, an alternative is to disable the fallback to NTLM to avoid such failed NTLM authentication altogether.
+It *is* possible to execute Rubeus with the `/ticket` parameter for authentication, omitting the `/domain`, `/username` and `/password` parameters, however in that case Rubeus will generate a random domain, username and password itself and provide those to the authentication package. This is however bad for OPSEC reasons as the username will be visible in the logs of the target domain. For that reason, it is recommended to specify the correct domain and the `/username` parameter with the user of the TGT. Finally, any password can be used as there is probably no legitimate password available. As discussed in the Offensive setup: Offensive Windows VM section, an alternative is to disable the fallback to NTLM to avoid such failed NTLM authentication altogether.
 
 **PowerShell**
 
@@ -525,7 +525,7 @@ mimikatz.exe privilege::debug "sekurlsa::pth /domain:%domain% /user:%user% /ntlm
 
 **Respawn Windows Explorer**
 
-The following command-line kills all explorer.exe instances and then using both Mimikatz and Rubeus relaunches it with a new logon session with the NTLM hash and Kerberos ticket injected into it.
+The following command-line kills all `explorer.exe` instances and then using both Mimikatz and Rubeus relaunches it with a new logon session with the NTLM hash and Kerberos ticket injected into it.
 
 ```powershell
 set domain=ad.bitsadmin.com
@@ -572,7 +572,7 @@ This concludes the part two in which both the Offensive Windows VM has been conf
 | Plaintext   | Fake login prompt                      | <https://github.com/shantanu561993/SharpLoginPrompt> | `SharpLoginPrompt.exe`                                                                                                                         |
 | Plaintext   | Create computer account                | <https://github.com/FuzzySecurity/StandIn>           | `StandIn.exe --computer DESKTOP-B1T54DM --make`                                                                                                |
 | Plaintext   | Internal monologue                     | <https://github.com/eladshamir/Internal-Monologue>   | `InternalMonologue.exe`                                                                                                                        |
-| Plaintext   | DPAPI masterkeys                       | <https://github.com/leftp/DPAPISnoop>                | `DPAPISnoop.exe`                                                                                                   refer to                            |
+| Plaintext   | DPAPI masterkeys                       | <https://github.com/leftp/DPAPISnoop>                | `DPAPISnoop.exe`                                                                                                                                       |
 | Plaintext   | Kerberoast                             | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe kerberoast /user:TargetUser`                                                                                                       |
 | Plaintext   | ASEP Roast                             | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe asreproast /user:TargetUser`                                                                                                       |
 | TGT         | TGT delegation                         | <https://github.com/GhostPack/Rubeus>                | `Rubeus.exe tgtdeleg /nowrap`                                                                                                                  |
