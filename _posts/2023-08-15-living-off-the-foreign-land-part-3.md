@@ -498,10 +498,12 @@ In this section, the specifically relevant to the LOFL setup with an Offensive W
 # Future work
 Besides all to be explored and documented LOFLCABs, there are some topics which are left out of this research for now, but can be researched deeper.
 
-### IPv6
+**IPv6**
+
 All tools that are part of the setup support IPv6, however this has not been tested yet.
 
-### Improved tun2socks behavior
+**Improved tun2socks behavior**
+
 Currently whenever a TCP SYN packet comes in the tun2socks simply responds immediately with a SYN/ACK. To improve usability of tools on the Offensive Windows VM whenever ports are closed, a more natural behavior would be if tun2socks first checks that a remote port is actually open. Once it found out a port is open, it can then respond with a SYN/ACK message, or in case the port is closed not respond to the SYN/ACK or respond with a RST message.
 
 Currently an interaction is ongoing in the Discussions section of the tun2socks project[^10] and a fork[^11] and pull request[^12] by GitHub user 0990 should implement the above behavior in tun2socks. However, I have not tested this fork yet.
