@@ -8,11 +8,11 @@ code, pre {
 
 .wrapper {
 	margin: 0 auto;
-	max-width: 1100px;
+	max-width: 1500px;
 }
 @media (max-width: 1120px) {
 	.wrapper {
-		max-width: 800px;
+		max-width: 1200px;
 	}
 }
 
@@ -53,9 +53,9 @@ code, pre {
 	}
 }
 
-$col-main-max-width: 800px;
+$col-main-max-width: 1200px;
 $col-secnod-width: 300px;
-$hide-sidebar-screen-width: 1120px;
+$hide-sidebar-screen-width: 1520px;
 
 .header-placeholder { position: absolute; }
 @media (max-width: $hide-sidebar-screen-width) {
@@ -140,7 +140,7 @@ $hide-sidebar-screen-width: 1120px;
 	width: $col-secnod-width;
 	padding: 20px;
 	background: #EEE;
-	z-index: 10;
+	z-index: 0;
 }
 .col-box{
 	color: #666;

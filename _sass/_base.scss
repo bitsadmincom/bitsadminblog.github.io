@@ -50,6 +50,10 @@ table {
 	border-spacing: 0;
     margin: 10pt auto;
 	background: #FFF;
+	table-layout: fixed;
+	width: 100%;
+	position: relative;
+	z-index: 1;
 
 	td, th {
 		border: 1px solid #CCC;
