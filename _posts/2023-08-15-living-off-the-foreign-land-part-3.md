@@ -425,7 +425,7 @@ Once the correct server is set, from the console with prepared credential materi
 ![Microsoft Configuration Manager console](/assets/img/20230815_living-off-the-foreign-land/SCCM.png "Microsoft Configuration Manager console")
 
 ### Miscellaneous software
-Many companies use in-house developed software. Even though more software is nowadays moving towards web technology, still a lot of Windows-based software is being used. This software can be installed or copied onto the Offensive Windows VM and used from there over the SOCKS proxy. This allows an attacker to use the software without being monitored at the endpoint and an attacker might be able to tamper with the software (e.g., by attaching a debugger to it) which allow for bypassing restrictions.
+Many companies use in-house developed software. Even though more software is nowadays moving towards web technology, still a lot of Windows-based software is being used. This software can be installed or copied onto the Offensive Windows VM and used from there over the SOCKS proxy. This allows an attacker to use the software without being monitored at the endpoint and an attacker might be able to tamper with the software (e.g., by attaching a debugger to it) which might allow for bypassing restrictions.
 
 ### Conclusion
 Because the Offensive Windows VM is used, many other Windows-based services can be managed, either the ones included in the Windows Server operating system like Routing and Remote Access Service (RRAS), Active Directory Federation Services (ADFS) and Windows Server Update Services (WSUS) or other software by Microsoft or other vendors which runs on in the Microsoft ecosystem.

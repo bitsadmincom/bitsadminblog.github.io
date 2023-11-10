@@ -29,7 +29,7 @@ In [part 1 of this article](/living-off-the-foreign-land-windows-as-offensive-pl
 Now the Linux routing VM is setup, it is time to prepare the Offensive Windows VM which will be connected to the second interface of the Linux routing VM.
 
 ## Client vs Server Windows
-Windows provides two types of operating systems: client and server. For the purpose of LOFL, in the majority of the cases a client Windows operating system like Windows 10 or Windows 11 without any domain configured works excellent. In some cases however, certain tools are only available on Windows Server, or require the current system to be part of a domain, which can be any domain. For those instances it can be relevant to have a so-called Offensive DC; a Windows Server which is running the Active Directory Domain Services role and a domain set up.
+Windows provides two types of operating systems: client and server. For the purpose of LOFL, in the majority of the cases a client Windows operating system like Windows 10 or Windows 11 without any domain configured works excellent. In some cases however, certain tools are only available on Windows Server, or require the current system to be part of a domain, which can be any domain. For those instances it can be relevant to have a so-called Offensive DC; a Windows Server which is running the Active Directory Domain Services role and a domain set up. At the LOFL-Project website these are listed when filtering for the [Server toolset](https://lofl-project.github.io/#+server).
 
 The [Windows Server to Workstation website](https://www.windowsworkstation.com/win2016-2019/)[^2] which I founded in 2008 and in 2017 handed over to Paul Rowland (@pauljrowland) provides instructions how to configure the Windows Server OS in such a way that it feels like a regular workstation. In my personal setup I am using a Windows 10 VM, and for the few occasions that I need an Offensive DC, I have a Windows Server 2019 VM.
 
@@ -190,7 +190,7 @@ ksetup.exe /SetRealmFlags AD.BITSADMIN.COM tcpsupported
 ```
 
 ## Certificates
-Trust in Active Directory quite extensively depends on whether the certificates presented are trusted on the local system. In other words, the Offensive Windows VM needs to have the certificate authorities of the target domain in its local Trusted Root Certification Authorities list. There are myriad ways to obtain the certificates (`.crt`) of the target domain which are discussed in the upcoming paragraphs. It might be that this section causes a bit of a chicken-egg problem as the Offensive Windows VM should already be used for these scripts while currently it is still being set up. In that case the best approach is to just work through the remainder of the article up to the Living off the Foreign Land section, and then return here to configure the certificates.
+Trust in Active Directory quite extensively depends on whether the certificates presented are trusted on the local system. In other words, the Offensive Windows VM needs to have the certificate authorities of the target domain in its local Trusted Root Certification Authorities list. There are myriad ways to obtain the certificates (`.crt`) of the target domain which are discussed in the upcoming paragraphs. It might be that this section causes a bit of a chicken-egg problem as the Offensive Windows VM should already be used for these scripts while currently it is still being set up. In that case the best approach is to just work through the remainder of the article up to the Living off the Foreign Land section starting in part 3, and then return here to configure the certificates.
 
 **Option \#1: Enterprise NTAuth store through LDAP**
 
@@ -272,11 +272,11 @@ Restart-Service WebClient
 ## Summary
 The Offensive Windows VM has now been configured to accept interaction with and authentication to the target domain.
 
-Now both the Linux router VM and Offensive Windows VM have been configured, a visual of how the setup looks like and works. Assuming that credential material is in place (to be discussed in the upcoming sections), the diagram illustrates three different connection flows:
+Now both the Linux router VM and Offensive Windows VM have been configured, a visual of how the setup looks like and works. Assuming that credential material is in place (to be discussed in the upcoming sections), the diagram illustrates three distinct connection flows:
 
 1. A share listing is requested of the `BAK1.ad.bitsadmin.com` server:
     * A DNS request (UDP) is performed to obtain the IP address of the `BAK1` server, this DNS request is converted to TCP and sent over the SOCKS tunnel to the `DC1` which then returns the IP address (`10.0.10.62`);
-    * The net.exe command-line utility connects to port `445/TCP` of the `BAK1` server and obtains the share listing;
+    * The `net.exe` command-line utility connects to port `445/TCP` of the `BAK1` server and obtains the share listing;
 2. The Burp application is launched: example of a tool that is often used for offensive purposes and whose DNS request for the portswigger.net domain and connection to it should for OPSEC reasons not go through the target environment;
 3. A CLDAP query is performed: Example of a CLDAP connection which using the `cldaproxy.sh` utility is converted to a regular LDAP connection.
 
@@ -478,7 +478,7 @@ It *is* possible to execute Rubeus with the `/ticket` parameter for authenticati
 The Rubeus command-line to launch PowerShell using a TGT looks as follows.
 
 ```powershell
-Rubeus.exe createnetonly /domain:ad.bitsadmin.com /username:User1 /password:dummy /ticket:C:\tmp\User1.kirbi /program:cmd.exe /show
+Rubeus.exe createnetonly /domain:ad.bitsadmin.com /username:User1 /password:dummy /ticket:C:\tmp\User1.kirbi /program:powershell.exe /show
 ```
 
 **Respawn Windows Explorer**
