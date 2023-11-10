@@ -21,6 +21,7 @@ permalink: /living-off-the-foreign-land-windows-as-offensive-platform-part-3
 *[GC-SSL]: LDAP to Global Catalog over SSL/TLS
 *[ADWS]: Active Directory Web Services
 *[MMC]: Microsoft Management Console
+*[RSAT]: Remote Server Administration Tools
 *[RPC]: Remote Procedure Call
 *[WMI]: Windows Management Instrumentation
 *[COM]: Component Object Model
@@ -68,7 +69,7 @@ The first category of attacks that are possible are the ones that focus on Activ
 | LDAP to Global Catalog over SSL/TLS   | GC-SSL           | 3269/TCP |                                                                                         |
 | Active Directory Web Services         | ADWS             | 9389/TCP |                                                                                         |
 
-### ActiveDirectory PowerShell module
+### AD PowerShell module
 A very powerful toolset that is included in Windows are the Remote Server Administration Tools (RSAT), which has been installed in the Offensive Windows VM in the [Offensive setup: Offensive Windows VM](/living-off-the-foreign-land-windows-as-offensive-platform-part-2#offensive-setup-offensive-windows-vm) section in part 2 of this article. RSAT consists of Microsoft Management Console (MMC) snap-ins, command-line tools as well various PowerShell modules for remote management. One of those modules is the `ActiveDirectory` module which contains close to 150 cmdlets which can be listed using `Get-Command -Module ActiveDirectory`.
 
 Because the Offensive Windows VM is not officially part of the domain, depending on the cmdlet used it might be required to use the `-Server` parameter which is supported by most of the cmdlets in the `ActiveDirectory` module to force the cmdlet to interact with the domain controller in the target network. As discussed in an earlier section, all (Kerberos) authentication is transparently taken care of by the respective authentication package. To avoid to have to specify the `-Server` parameter each time, it is possible to configure that for certain cmdlets (any cmdlet where the noun starts with AD) the `-Server` parameter is automatically added with the specified value. The following line of PowerShell can be used for that.
@@ -364,7 +365,7 @@ CertThumbprint       :
 
 Event logs can be cleared to cover up tracks using the `Clear-EventLog` cmdlet or through the Event Viewer MMC snap-in.
 
-### Windows Server Roles and Features
+### Windows Server Manager
 Through the Server Manager (`ServerManager.exe`) it is possible to manage servers in the domain, launching the various management consoles or even installing or removing roles or features on those servers.
 
 ![Server Manager](/assets/img/20230815_living-off-the-foreign-land/ServerManager.png "Server Manager")
@@ -394,12 +395,12 @@ Regarding the network-level interaction with the Hyper-V server, port `5985/TCP`
 
 ![Hyper-V Console](/assets/img/20230815_living-off-the-foreign-land/hyperv-console.png "Hyper-V Console")
 
-### Remote Desktop Services (RDS)
-Remote Desktop Services is a Windows Server role which allows users to access and interact with a remote computer or VM. RDS provides both functionality to provide users dedicated environments, or a shared desktop environment on a single server. Moreover, through its RemoteApp functionality, it can stream apps that are running on a server to a client. This functionality works seamlessly in a Windows client environment and through `mstsc.exe` these RemoteApps will show up on the desktop of the Offensive Windows VM.
+### Remote Desktop Services
+Remote Desktop Services (RDS) is a Windows Server role which allows users to access and interact with a remote computer or VM. RDS provides both functionality to provide users dedicated environments, or a shared desktop environment on a single server. Moreover, through its RemoteApp functionality, it can stream apps that are running on a server to a client. This functionality works seamlessly in a Windows client environment and through `mstsc.exe` these RemoteApps will show up on the desktop of the Offensive Windows VM.
 
 To manage the server part of RDS, the Server Manager (`ServerManager.exe`) can be used. In the Remote Desktop Services section of the Server Manager, the various aspects of RDS can be managed such as RD Web Access and RemoteApps that are published.
 
-### Active Directory Certificate Services (ADCS)
+### Certificate Services
 Active Directory Certificate Services (ADCS) is a server role which provides certificate-based authentication and encryption services for a network. The management of ADCS consists of two parts. The first part is the Certificate Templates MMC snap-in (`certtmpl.msc`). This snap-in needs to be executed from an OffensiveDC, otherwise it will complain that it is not able to locate a DC and is also not able to connect to the target domain. On the OffensiveDC, launch `certtmpl.msc`, ignore the warning message and right click root node -\> Connect to another writable domain controller -\> Change -\> `ad.bitsadmin.com` -\> OK. Now it is possible to create (duplicate), modify and delete certificate templates. Note that if a SOCKS tunnel is used that does not support UDP, for this snap-in the `cldaproxy.sh` script is required.
 
 The second part is the Certificate Authority MMC snap-in (`certsrv.msc`) which can be launched with the `/COMPUTER:` parameter to connect to a remote certificate authority: `certsrv.msc /COMPUTER:CASUB1.ad.bitsadmin.com`. This snap-in provides functionalities like listing the issued and revoked certificates, listing the failed certificate requests, issuing or denying pending requests and finally enabling certificate templates to be used from the specified Certification Authority. Apart from the last function which displays an error that, all functions work well from the LOFL setup.
@@ -415,7 +416,7 @@ SQL Server Management Studio (SSMS) is the official client to interact with MSSQ
 
 ![SQL Server Management Studio](/assets/img/20230815_living-off-the-foreign-land/MSSQL.png "SQL Server Management Studio")
 
-### Microsoft Configuration Manager (MCM)
+### Microsoft Configuration Manager
 Microsoft Configuration Manager (MCM), formerly known as System Center Configuration Manager (SCCM) is a software management and deployment solution for efficiently managing and controlling IT infrastructure. The Configuration Manager console can be downloaded from Microsoft website and installed on the offensive Windows 10 VM to manage systems in the environment.
 
 During the setup of the MCM console, the SCCM server is configured. If needed, this host can be changed through the registry. The MCM console first looks at the ServerName value specified in `HKCU\SOFTWARE\Microsoft\ConfigMgr10\AdminUI\MRU\1`. In case the `MRU` key does not exist, it will fall back to the Server value configured in `HKLM\SOFTWARE\WOW6432Node\Microsoft\ConfigMgr10\AdminUI\Connection`.
