@@ -416,6 +416,11 @@ SQL Server Management Studio (SSMS) is the official client to interact with MSSQ
 
 ![SQL Server Management Studio](/assets/img/20230815_living-off-the-foreign-land/MSSQL.png "SQL Server Management Studio")
 
+<video width="740" height="430" controls>
+  <source src="/assets/img/20230815_living-off-the-foreign-land/mssql.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ### Microsoft Configuration Manager
 Microsoft Configuration Manager (MCM), formerly known as System Center Configuration Manager (SCCM) is a software management and deployment solution for efficiently managing and controlling IT infrastructure. The Configuration Manager console can be downloaded from Microsoft website and installed on the offensive Windows 10 VM to manage systems in the environment.
 
