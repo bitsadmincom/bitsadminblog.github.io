@@ -222,7 +222,7 @@ ReturnValue PSComputerName
 PS C:\>
 ```
 
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20230815_living-off-the-foreign-land/WMI_Win32_Product_poster.png">
   <source src="/assets/img/20230815_living-off-the-foreign-land/WMI_Win32_Product.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -416,7 +416,7 @@ SQL Server Management Studio (SSMS) is the official client to interact with MSSQ
 
 ![SQL Server Management Studio](/assets/img/20230815_living-off-the-foreign-land/MSSQL.png "SQL Server Management Studio")
 
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20230815_living-off-the-foreign-land/mssql_poster.png">
   <source src="/assets/img/20230815_living-off-the-foreign-land/mssql.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

@@ -340,7 +340,7 @@ As discussed before, many implementations of SOCKS server do not support the UDP
 
 To make this all work, the `dns_over_tcp.py` script from the LOFL repository[^4] is available which does the following: Upon start of the script, the script initiates listeners on both port `53/UDP` and port `53/TCP`. This is also the reason why the dnsmasq DNS server should listen on port `5353`, otherwise port `53` is already in use. Moreover, the `dns_over_tcp.py` script parses the `/etc/dnsmasq.conf` configuration file where based on the configured entries, the domains are selected for which the incoming DNS requests need to be converted to a DNS request over TCP.
 
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20230815_living-off-the-foreign-land/dns_over_tcp_poster.png">
   <source src="/assets/img/20230815_living-off-the-foreign-land/dns_over_tcp.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
