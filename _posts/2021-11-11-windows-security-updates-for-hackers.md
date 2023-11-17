@@ -149,7 +149,7 @@ WES-NG by default outputs the results to the console. For further analysis howev
 wes.py systeminfo.txt -o srv01.csv
 ```
 See below an animation from collecting the OS version and missing patches to identifying the missing patches using WES-NG, including the use of some filters described and the csv output option.
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img//assets/img/20211030_windows-security-updates/wes_poster.png">
   <source src="/assets/img/20211030_windows-security-updates/wes.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -172,7 +172,7 @@ In case the output needs to be more accurate, another option is to execute WES-N
 
 ## Automatically verify
 Because manually verifying is still a tedious process, [@DominicBreuker](https://github.com/DominicBreuker) contributed a useful feature to automate the process of looking up the supersedence in the Microsoft Update Catalog by parsing the website and automatically walking the chains. This feature can be used by providing the `--muc-lookup` parameter to the `wes.py` script. After determining the missing patches based on the MSRC dataset, it will take the resulting missing patches and automatically validate each of them at the Microsoft Update Catalog.
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20211030_windows-security-updates/muclookup_poster.png">
   <source src="/assets/img/20211030_windows-security-updates/muclookup.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -228,7 +228,7 @@ C:\>
 Based on the list of missing KBs it is still challenging to determine the security vulnerabilities the system is exposed to. Thats why the `missing.txt` result file can now be fed to `wes.py` to get this insight. From version 1.00 the `--missing` (shorthand: `-m`) and `--os` parameters have been added to `wes.py` to facilitate this.
 
 Because `missing.txt` only contains a list of KBs that are missing from the system, it is needed to also specify the operating system. The easiest method though is to first execute `wes.py` with only the `-m` parameter: `wes.py -m missing.txt`. Subsequently from the list of possible operating systems in the output the ID of the relevant operating system can be picked and `wes.py` can be executed again, now also providing the operating system ID: `wes.py -m missing.txt --os 2`.
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20211030_windows-security-updates/missing_poster.png">
   <source src="/assets/img/20211030_windows-security-updates/missing.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

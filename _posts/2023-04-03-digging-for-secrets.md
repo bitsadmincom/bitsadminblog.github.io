@@ -91,7 +91,7 @@ In many occasions the PowerShell oneliners will be sufficient for collecting the
 # Dir2json
 Dir2json is a tool I wrote when I noticed the need for a stealthy tool which from the memory of a Cobalt Strike infection is able to create a directory listing, and without touching the disk send the results back to the Cobalt Strike Team Server. Initially I developed a C++ version of the tool to practice the knowledge obtained in Pavel Yosifovich' (@zodiacon) Windows System Programming course. This tool works well, but then I realized it was not possible to easily turn this into a Beacon Object File (BOF). For that reason instead of fixing the C++ tool to make it work as a BOF I rewrote the Dir2json tool in C# which allows for in-memory execution and file download thanks to Ceri Coburn's (@_EthicalChaos_) BOF.NET project[^3]. Additionally, the project can also be compiled and executed as a regular .NET executable. The C# version of Dir2json is available at [https://github.com/bitsadmin/dir2json/](https://github.com/bitsadmin/dir2json/). The video below shows how to execute the tool from Cobalt Strike.
 
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20230403_digging-for-secrets/cobaltstrike_poster.png">
   <source src="/assets/img/20230403_digging-for-secrets/cobaltstrike.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -162,7 +162,7 @@ After the directory listing has been imported, it is available in the `$csv` var
 
 To be able to systematically evaluate the output, the command can also be piped to the `Out-Host -Paging` command (shorthand: `oh -p`) or stored in a `.csv` file by piping it to the `Export-Csv` cmdlet). For some more information on the usage the `Export-Csv` cmdlet, check out the Cypher query tools section of the Dealing with large BloodHound datasets blog post[^4].
 
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20230403_digging-for-secrets/powershell_poster.png">
   <source src="/assets/img/20230403_digging-for-secrets/powershell.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

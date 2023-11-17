@@ -22,7 +22,7 @@ This feature also immediately triggered my hacker mindset. Despite an increased 
 
 # Demo
 This demo video (no audio) shows how a remote system is configured to allow shadowing without consent. The steps in this video will be explained in the remainder of the article.
-<video width="740" height="430" controls>
+<video width="740" height="430" controls poster="/assets/img/20210329_rdp-shadowing/rdp-shadowing_poster.png">
   <source src="/assets/img/20210329_rdp-shadowing/rdp-shadowing.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video> 
