@@ -396,7 +396,7 @@ After creating the `tun1` interface, the tun2socks command line can be used to l
 tun2socks -device tun1 -proxy socks4://127.0.0.1:1080
 ```
 
-As can be seen, the `-device` parameter specifies the interface it should use to receive traffic, which is then forwarded over SOCKS. The `-proxy` parameter specifies where the traffic coming in at the device should be proxied to. The proxy protocol (in this case socks4) has various options where for LOFL the relevant options are either `socks4` or `socks5`. More options for the proxy protocol can be found at the Proxy Models page in the tun2socks wiki[^21].
+As can be seen, the `-device` parameter specifies the interface it should use to receive traffic, which is then forwarded over SOCKS. The `-proxy` parameter specifies where the traffic coming in at the device should be proxied to. The proxy protocol (in this case `socks4`) has various options where for LOFL the relevant options are either `socks4` or `socks5`. More options for the proxy protocol can be found at the Proxy Models page in the tun2socks wiki[^21].
 
 The `tun1` interface is now available to get traffic into the target network, however two more settings need to be configured before it can be used.
 

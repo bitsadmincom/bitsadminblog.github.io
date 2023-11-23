@@ -19,6 +19,7 @@ permalink: /living-off-the-foreign-land-windows-as-offensive-platform-part-2
 *[CLDAP]: Connectionless LDAP
 *[LDAPS]: LDAP over TLS/SSL
 *[MMC]: Microsoft Management Console
+*[ADDS]: Active Directory Domain Services
 
 
 # Introduction
@@ -29,7 +30,10 @@ In [part 1 of this article](/living-off-the-foreign-land-windows-as-offensive-pl
 Now the Linux routing VM is setup, it is time to prepare the Offensive Windows VM which will be connected to the second interface of the Linux routing VM.
 
 ## Client vs Server Windows
-Windows provides two types of operating systems: client and server. For the purpose of LOFL, in the majority of the cases a client Windows operating system like Windows 10 or Windows 11 without any domain configured works excellent. In some cases however, certain tools are only available on Windows Server, or require the current system to be part of a domain, which can be any domain. For those instances it can be relevant to have a so-called Offensive DC; a Windows Server which is running the Active Directory Domain Services role and a domain set up. At the LOFL-Project website these are listed when filtering for the [Server toolset](https://lofl-project.github.io/#+server).
+Windows provides two types of operating systems: client and server. For the purpose of LOFL, in the majority of the cases a client Windows operating system like Windows 10 or Windows 11 without any domain configured works excellent. In some cases however, certain tools are only available on Windows Server. At the LOFL-Project website the LOFLCABs that require a Server OS are listed when filtering for the [Server toolset](https://lofl-project.github.io/#+server). There are also LOFLCABs which require the current system to be part of a domain, which can be really any domain. For those instances it can be relevant to have a so-called Offensive DC; a Windows Server which is running the Active Directory Domain Services (ADDS) role and a domain set up.
+
+### Offensive DC
+The Offensive DC is a Windows Server VM which has to be set up with ADDS with any domain name (except for the target domain). The only objective is that the few LOFLCABs which require that they are executed on a domain-joined machine as opposed to just a machine in a workgroup. Next, these LOFLCABs can then be used against a remote domain after the domain check is satisfied. It is good to be aware that in some cases the domain name of the Offensive DC is sent to the target network so it is recommended to use a domain name that looks similar to the target domain, e.g. `ad.bitsadmln.com` when targeting the domain `ad.bitsadmin.com` (note the `l` which replaced the `i`). The LOFL-Project website mentions the Offensive DC setup in case it is required. An example of such LOFLCAB is the Group Policy Management MMC snap-in: [gpmc.msc](https://lofl-project.github.io/loflcab/MMC/gpmc/).
 
 The [Windows Server to Workstation website](https://www.windowsworkstation.com/win2016-2019/)[^2] which I founded in 2008 and in 2017 handed over to Paul Rowland (@pauljrowland) provides instructions how to configure the Windows Server OS in such a way that it feels like a regular workstation. In my personal setup I am using a Windows 10 VM, and for the few occasions that I need an Offensive DC, I have a Windows Server 2019 VM.
 
