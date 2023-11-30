@@ -338,6 +338,10 @@ PS C:\> reg.exe add "\\W10.ad.bitsadmin.com\HKLM\Software\Microsoft\Windows\Curr
 The operation completed successfully.
 PS C:\>
 ```
+<video width="740" height="430" controls poster="/assets/img/20230815_living-off-the-foreign-land/reg_poster.png">
+  <source src="/assets/img/20230815_living-off-the-foreign-land/reg.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ### Windows Event Log
 In case the objective of an engagement is to target a certain user, if a user has remotely logged on to a certain server, it might be possible to through the Security event log to identify the source IP of the user, after which it can be attempted to laterally move to that host. The same approach can be used for the Security logs of the domain controller, to identify where user authentications are coming from, or in case it is enabled, requests for TGTs or even TGSs.
